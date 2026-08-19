@@ -5,6 +5,9 @@ public class EV {
     private static final String LINE = "____________________________________________________________";
 
     private static final String COMMAND_BYE = "bye";
+    private static final String COMMAND_LIST = "list";
+
+    private static final int MAX_TASKS = 100;
 
     private static final String BANNER = " _______     __\n"
             + "|   ____|   /  \\\n"
@@ -13,6 +16,9 @@ public class EV {
             + "|  |____    \\  /\n"
             + "|_______|    \\/\n";
 
+    private static String[] tasks = new String[MAX_TASKS];
+    private static int taskCount = 0;
+
     public static void main(String[] args) {
         System.out.println(BANNER);
         reply("Hello! I'm EV.\nWhat can I do for you?");
@@ -20,13 +26,43 @@ public class EV {
         Scanner in = new Scanner(System.in);
         while (in.hasNextLine()) {
             String command = in.nextLine().trim();
+            if (command.isEmpty()) {
+                continue;
+            }
             if (command.equals(COMMAND_BYE)) {
                 break;
+            } else if (command.equals(COMMAND_LIST)) {
+                reply(formatTasks());
+            } else {
+                addTask(command);
             }
-            reply(command);
         }
 
         reply("Bye. Hope to see you again soon!");
+    }
+
+    private static void addTask(String task) {
+        if (taskCount == MAX_TASKS) {
+            reply("Sorry, I can only remember " + MAX_TASKS + " tasks.");
+            return;
+        }
+        tasks[taskCount] = task;
+        taskCount++;
+        reply("added: " + task);
+    }
+
+    private static String formatTasks() {
+        if (taskCount == 0) {
+            return "There is nothing in your list yet.";
+        }
+        StringBuilder formatted = new StringBuilder();
+        for (int i = 0; i < taskCount; i++) {
+            if (i > 0) {
+                formatted.append("\n");
+            }
+            formatted.append(i + 1).append(". ").append(tasks[i]);
+        }
+        return formatted.toString();
     }
 
     private static void reply(String message) {
