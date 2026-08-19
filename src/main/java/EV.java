@@ -71,7 +71,7 @@ public class EV {
             reply("A todo needs a description, e.g. todo borrow book");
             return;
         }
-        addTask(Task.createTodo(argument));
+        addTask(new Todo(argument));
     }
 
     private static void addDeadline(String argument) {
@@ -86,7 +86,7 @@ public class EV {
             reply("A deadline needs a description and a time, e.g. deadline return book /by Sunday");
             return;
         }
-        addTask(Task.createDeadline(description, by));
+        addTask(new Deadline(description, by));
     }
 
     private static void addEvent(String argument) {
@@ -105,7 +105,7 @@ public class EV {
                     + "e.g. event project meeting /from Mon 2pm /to 4pm");
             return;
         }
-        addTask(Task.createEvent(description, from, to));
+        addTask(new Event(description, from, to));
     }
 
     private static void addTask(Task task) {
