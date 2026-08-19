@@ -7,6 +7,7 @@ public class EV {
     private static final String COMMAND_BYE = "bye";
     private static final String COMMAND_LIST = "list";
     private static final String COMMAND_MARK = "mark";
+    private static final String COMMAND_UNMARK = "unmark";
 
     private static final int MAX_TASKS = 100;
 
@@ -36,7 +37,9 @@ public class EV {
             } else if (command.equals(COMMAND_LIST)) {
                 reply(formatTasks());
             } else if (command.startsWith(COMMAND_MARK + " ")) {
-                markTask(command.substring(COMMAND_MARK.length() + 1).trim());
+                setTaskDone(command.substring(COMMAND_MARK.length() + 1).trim(), true);
+            } else if (command.startsWith(COMMAND_UNMARK + " ")) {
+                setTaskDone(command.substring(COMMAND_UNMARK.length() + 1).trim(), false);
             } else {
                 addTask(command);
             }
@@ -56,13 +59,16 @@ public class EV {
         reply("added: " + task);
     }
 
-    private static void markTask(String argument) {
+    private static void setTaskDone(String argument, boolean done) {
         int index = parseTaskIndex(argument);
         if (index < 0) {
             return;
         }
-        isDone[index] = true;
-        reply("Nice! I've marked this task as done:\n  " + formatTask(index));
+        isDone[index] = done;
+        String message = done
+                ? "Nice! I've marked this task as done:"
+                : "OK, I've marked this task as not done yet:";
+        reply(message + "\n  " + formatTask(index));
     }
 
     private static int parseTaskIndex(String argument) {
