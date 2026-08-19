@@ -11,6 +11,7 @@ public class EV {
     private static final String COMMAND_TODO = "todo";
     private static final String COMMAND_DEADLINE = "deadline";
     private static final String COMMAND_EVENT = "event";
+    private static final String COMMAND_DELETE = "delete";
 
     private static final String OPTION_BY = "/by";
     private static final String OPTION_FROM = "/from";
@@ -70,9 +71,11 @@ public class EV {
             addDeadline(argument);
         } else if (keyword.equals(COMMAND_EVENT)) {
             addEvent(argument);
+        } else if (keyword.equals(COMMAND_DELETE)) {
+            deleteTask(argument);
         } else {
             throw new EVException("I don't know what \"" + keyword + "\" means.\n"
-                    + "I understand: todo, deadline, event, list, mark, unmark, bye.");
+                    + "I understand: todo, deadline, event, list, mark, unmark, delete, bye.");
         }
     }
 
@@ -140,6 +143,18 @@ public class EV {
         tasks[taskCount] = task;
         taskCount++;
         reply("Got it. I've added this task:\n  " + task
+                + "\nNow you have " + taskCount + " " + pluraliseTask(taskCount) + " in the list.");
+    }
+
+    private static void deleteTask(String argument) throws EVException {
+        int index = parseTaskIndex(argument);
+        Task removed = tasks[index];
+        for (int i = index; i < taskCount - 1; i++) {
+            tasks[i] = tasks[i + 1];
+        }
+        taskCount--;
+        tasks[taskCount] = null;
+        reply("Noted. I've removed this task:\n  " + removed
                 + "\nNow you have " + taskCount + " " + pluraliseTask(taskCount) + " in the list.");
     }
 

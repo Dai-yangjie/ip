@@ -341,7 +341,7 @@ bye
 ```text
 ____________________________________________________________
 I don't know what "blah" means.
-I understand: todo, deadline, event, list, mark, unmark, bye.
+I understand: todo, deadline, event, list, mark, unmark, delete, bye.
 ____________________________________________________________
 ```
 
@@ -540,7 +540,7 @@ Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 I don't know what "blah" means.
-I understand: todo, deadline, event, list, mark, unmark, bye.
+I understand: todo, deadline, event, list, mark, unmark, delete, bye.
 ____________________________________________________________
 ____________________________________________________________
 A deadline needs a /by to say when it is due.
@@ -653,6 +653,209 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] borrow book
+____________________________________________________________
+```
+
+### TC-21 Delete a task from the middle
+
+**Aim:** `delete 3` removes the third task, reports it, and the remaining tasks close the gap so
+that `list` numbers them 1 to 3 with no hole.
+
+**Input**
+
+```text
+todo read book
+deadline return book /by June 6th
+event project meeting /from Aug 6th 2pm /to 4pm
+todo join sports club
+delete 3
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: June 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] join sports club
+Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read book
+2.[D][ ] return book (by: June 6th)
+3.[T][ ] join sports club
+____________________________________________________________
+```
+
+### TC-22 Invalid task numbers for delete
+
+**Aim:** `delete` validates its argument the same way `mark` and `unmark` do: empty list, no
+number, non-numeric argument, and out of range.
+
+**Input**
+
+```text
+delete 1
+todo read book
+delete
+delete abc
+delete 2
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Your list is empty, so there is no task to update yet.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Please tell me which task number.
+Try something like: mark 2
+____________________________________________________________
+____________________________________________________________
+"abc" is not a task number.
+Try something like: mark 2
+____________________________________________________________
+____________________________________________________________
+There is no task 2 in your list.
+You currently have 1 task, so please pick a number between 1 and 1.
+____________________________________________________________
+```
+
+### TC-23 Deleting keeps the remaining tasks intact
+
+**Aim:** The most dangerous part of delete is shifting the surviving tasks. Mark the last task,
+delete the first, then check that (a) the marked task is still marked after moving position,
+(b) `mark 2` now targets the shifted task rather than the old occupant of that slot, and (c) a
+task added afterwards lands at the end instead of overwriting a survivor.
+
+**Input**
+
+```text
+todo a
+todo b
+todo c
+mark 3
+delete 1
+list
+mark 2
+list
+todo d
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] a
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] b
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] c
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] c
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] a
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] b
+2.[T][X] c
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] c
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] b
+2.[T][X] c
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] d
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] b
+2.[T][X] c
+3.[T][ ] d
+____________________________________________________________
+```
+
+### TC-24 Delete the only task
+
+**Aim:** Deleting the last remaining task reports a count of zero and leaves the list genuinely
+empty, not holding a stale reference to the removed task.
+
+**Input**
+
+```text
+todo only task
+delete 1
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] only task
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] only task
+Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+There is nothing in your list yet.
 ____________________________________________________________
 ```
 
