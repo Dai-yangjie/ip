@@ -45,73 +45,97 @@ public class EV {
 
             if (keyword.equals(COMMAND_BYE)) {
                 break;
-            } else if (keyword.equals(COMMAND_LIST)) {
-                reply(formatTasks());
-            } else if (keyword.equals(COMMAND_MARK)) {
-                setTaskDone(argument, true);
-            } else if (keyword.equals(COMMAND_UNMARK)) {
-                setTaskDone(argument, false);
-            } else if (keyword.equals(COMMAND_TODO)) {
-                addTodo(argument);
-            } else if (keyword.equals(COMMAND_DEADLINE)) {
-                addDeadline(argument);
-            } else if (keyword.equals(COMMAND_EVENT)) {
-                addEvent(argument);
-            } else {
-                reply("Sorry, I don't know what \"" + keyword + "\" means.\n"
-                        + "Try: todo, deadline, event, list, mark, unmark or bye.");
+            }
+
+            try {
+                handleCommand(keyword, argument);
+            } catch (EVException e) {
+                reply(e.getMessage());
             }
         }
 
         reply("Bye. Hope to see you again soon!");
     }
 
-    private static void addTodo(String argument) {
+    private static void handleCommand(String keyword, String argument) throws EVException {
+        if (keyword.equals(COMMAND_LIST)) {
+            reply(formatTasks());
+        } else if (keyword.equals(COMMAND_MARK)) {
+            setTaskDone(argument, true);
+        } else if (keyword.equals(COMMAND_UNMARK)) {
+            setTaskDone(argument, false);
+        } else if (keyword.equals(COMMAND_TODO)) {
+            addTodo(argument);
+        } else if (keyword.equals(COMMAND_DEADLINE)) {
+            addDeadline(argument);
+        } else if (keyword.equals(COMMAND_EVENT)) {
+            addEvent(argument);
+        } else {
+            throw new EVException("I don't know what \"" + keyword + "\" means.\n"
+                    + "I understand: todo, deadline, event, list, mark, unmark, bye.");
+        }
+    }
+
+    private static void addTodo(String argument) throws EVException {
         if (argument.isEmpty()) {
-            reply("A todo needs a description, e.g. todo borrow book");
-            return;
+            throw new EVException("A todo needs a description.\n"
+                    + "Try something like: todo borrow book");
         }
         addTask(new Todo(argument));
     }
 
-    private static void addDeadline(String argument) {
+    private static void addDeadline(String argument) throws EVException {
         int byIndex = argument.indexOf(OPTION_BY);
         if (byIndex < 0) {
-            reply("A deadline needs a " + OPTION_BY + ", e.g. deadline return book /by Sunday");
-            return;
+            throw new EVException("A deadline needs a " + OPTION_BY + " to say when it is due.\n"
+                    + "Try something like: deadline return book /by Sunday");
         }
         String description = argument.substring(0, byIndex).trim();
         String by = argument.substring(byIndex + OPTION_BY.length()).trim();
-        if (description.isEmpty() || by.isEmpty()) {
-            reply("A deadline needs a description and a time, e.g. deadline return book /by Sunday");
-            return;
+        if (description.isEmpty()) {
+            throw new EVException("A deadline needs a description before " + OPTION_BY + ".\n"
+                    + "Try something like: deadline return book /by Sunday");
+        }
+        if (by.isEmpty()) {
+            throw new EVException("A deadline needs a due time after " + OPTION_BY + ".\n"
+                    + "Try something like: deadline return book /by Sunday");
         }
         addTask(new Deadline(description, by));
     }
 
-    private static void addEvent(String argument) {
+    private static void addEvent(String argument) throws EVException {
         int fromIndex = argument.indexOf(OPTION_FROM);
         int toIndex = argument.indexOf(OPTION_TO);
-        if (fromIndex < 0 || toIndex < fromIndex) {
-            reply("An event needs a " + OPTION_FROM + " and a " + OPTION_TO
-                    + ", e.g. event project meeting /from Mon 2pm /to 4pm");
-            return;
+        if (fromIndex < 0) {
+            throw new EVException("An event needs a " + OPTION_FROM + " to say when it starts.\n"
+                    + "Try something like: event project meeting /from Mon 2pm /to 4pm");
+        }
+        if (toIndex < 0) {
+            throw new EVException("An event needs a " + OPTION_TO + " to say when it ends.\n"
+                    + "Try something like: event project meeting /from Mon 2pm /to 4pm");
+        }
+        if (toIndex < fromIndex) {
+            throw new EVException("Please put " + OPTION_FROM + " before " + OPTION_TO + ".\n"
+                    + "Try something like: event project meeting /from Mon 2pm /to 4pm");
         }
         String description = argument.substring(0, fromIndex).trim();
         String from = argument.substring(fromIndex + OPTION_FROM.length(), toIndex).trim();
         String to = argument.substring(toIndex + OPTION_TO.length()).trim();
-        if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
-            reply("An event needs a description, a start and an end, "
-                    + "e.g. event project meeting /from Mon 2pm /to 4pm");
-            return;
+        if (description.isEmpty()) {
+            throw new EVException("An event needs a description before " + OPTION_FROM + ".\n"
+                    + "Try something like: event project meeting /from Mon 2pm /to 4pm");
+        }
+        if (from.isEmpty() || to.isEmpty()) {
+            throw new EVException("An event needs a start time and an end time.\n"
+                    + "Try something like: event project meeting /from Mon 2pm /to 4pm");
         }
         addTask(new Event(description, from, to));
     }
 
-    private static void addTask(Task task) {
+    private static void addTask(Task task) throws EVException {
         if (taskCount == MAX_TASKS) {
-            reply("Sorry, I can only remember " + MAX_TASKS + " tasks.");
-            return;
+            throw new EVException("My list is full at " + MAX_TASKS + " tasks, "
+                    + "so I cannot add another one.");
         }
         tasks[taskCount] = task;
         taskCount++;
@@ -119,12 +143,8 @@ public class EV {
                 + "\nNow you have " + taskCount + " " + pluraliseTask(taskCount) + " in the list.");
     }
 
-    private static void setTaskDone(String argument, boolean done) {
-        int index = parseTaskIndex(argument);
-        if (index < 0) {
-            return;
-        }
-        Task task = tasks[index];
+    private static void setTaskDone(String argument, boolean done) throws EVException {
+        Task task = tasks[parseTaskIndex(argument)];
         if (done) {
             task.markAsDone();
         } else {
@@ -136,17 +156,25 @@ public class EV {
         reply(message + "\n  " + task);
     }
 
-    private static int parseTaskIndex(String argument) {
+    private static int parseTaskIndex(String argument) throws EVException {
+        if (argument.isEmpty()) {
+            throw new EVException("Please tell me which task number.\n"
+                    + "Try something like: mark 2");
+        }
         int taskNumber;
         try {
             taskNumber = Integer.parseInt(argument);
         } catch (NumberFormatException e) {
-            reply("Please tell me which task number, e.g. mark 2");
-            return -1;
+            throw new EVException("\"" + argument + "\" is not a task number.\n"
+                    + "Try something like: mark 2");
+        }
+        if (taskCount == 0) {
+            throw new EVException("Your list is empty, so there is no task to update yet.");
         }
         if (taskNumber < 1 || taskNumber > taskCount) {
-            reply("There is no task " + taskNumber + " in your list.");
-            return -1;
+            throw new EVException("There is no task " + taskNumber + " in your list.\n"
+                    + "You currently have " + taskCount + " " + pluraliseTask(taskCount)
+                    + ", so please pick a number between 1 and " + taskCount + ".");
         }
         return taskNumber - 1;
     }
