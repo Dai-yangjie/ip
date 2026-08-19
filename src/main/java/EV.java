@@ -8,6 +8,13 @@ public class EV {
     private static final String COMMAND_LIST = "list";
     private static final String COMMAND_MARK = "mark";
     private static final String COMMAND_UNMARK = "unmark";
+    private static final String COMMAND_TODO = "todo";
+    private static final String COMMAND_DEADLINE = "deadline";
+    private static final String COMMAND_EVENT = "event";
+
+    private static final String OPTION_BY = "/by";
+    private static final String OPTION_FROM = "/from";
+    private static final String OPTION_TO = "/to";
 
     private static final int MAX_TASKS = 100;
 
@@ -31,30 +38,85 @@ public class EV {
             if (command.isEmpty()) {
                 continue;
             }
-            if (command.equals(COMMAND_BYE)) {
+
+            String[] parts = command.split(" ", 2);
+            String keyword = parts[0];
+            String argument = parts.length > 1 ? parts[1].trim() : "";
+
+            if (keyword.equals(COMMAND_BYE)) {
                 break;
-            } else if (command.equals(COMMAND_LIST)) {
+            } else if (keyword.equals(COMMAND_LIST)) {
                 reply(formatTasks());
-            } else if (command.startsWith(COMMAND_MARK + " ")) {
-                setTaskDone(command.substring(COMMAND_MARK.length() + 1).trim(), true);
-            } else if (command.startsWith(COMMAND_UNMARK + " ")) {
-                setTaskDone(command.substring(COMMAND_UNMARK.length() + 1).trim(), false);
+            } else if (keyword.equals(COMMAND_MARK)) {
+                setTaskDone(argument, true);
+            } else if (keyword.equals(COMMAND_UNMARK)) {
+                setTaskDone(argument, false);
+            } else if (keyword.equals(COMMAND_TODO)) {
+                addTodo(argument);
+            } else if (keyword.equals(COMMAND_DEADLINE)) {
+                addDeadline(argument);
+            } else if (keyword.equals(COMMAND_EVENT)) {
+                addEvent(argument);
             } else {
-                addTask(command);
+                reply("Sorry, I don't know what \"" + keyword + "\" means.\n"
+                        + "Try: todo, deadline, event, list, mark, unmark or bye.");
             }
         }
 
         reply("Bye. Hope to see you again soon!");
     }
 
-    private static void addTask(String description) {
+    private static void addTodo(String argument) {
+        if (argument.isEmpty()) {
+            reply("A todo needs a description, e.g. todo borrow book");
+            return;
+        }
+        addTask(Task.createTodo(argument));
+    }
+
+    private static void addDeadline(String argument) {
+        int byIndex = argument.indexOf(OPTION_BY);
+        if (byIndex < 0) {
+            reply("A deadline needs a " + OPTION_BY + ", e.g. deadline return book /by Sunday");
+            return;
+        }
+        String description = argument.substring(0, byIndex).trim();
+        String by = argument.substring(byIndex + OPTION_BY.length()).trim();
+        if (description.isEmpty() || by.isEmpty()) {
+            reply("A deadline needs a description and a time, e.g. deadline return book /by Sunday");
+            return;
+        }
+        addTask(Task.createDeadline(description, by));
+    }
+
+    private static void addEvent(String argument) {
+        int fromIndex = argument.indexOf(OPTION_FROM);
+        int toIndex = argument.indexOf(OPTION_TO);
+        if (fromIndex < 0 || toIndex < fromIndex) {
+            reply("An event needs a " + OPTION_FROM + " and a " + OPTION_TO
+                    + ", e.g. event project meeting /from Mon 2pm /to 4pm");
+            return;
+        }
+        String description = argument.substring(0, fromIndex).trim();
+        String from = argument.substring(fromIndex + OPTION_FROM.length(), toIndex).trim();
+        String to = argument.substring(toIndex + OPTION_TO.length()).trim();
+        if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
+            reply("An event needs a description, a start and an end, "
+                    + "e.g. event project meeting /from Mon 2pm /to 4pm");
+            return;
+        }
+        addTask(Task.createEvent(description, from, to));
+    }
+
+    private static void addTask(Task task) {
         if (taskCount == MAX_TASKS) {
             reply("Sorry, I can only remember " + MAX_TASKS + " tasks.");
             return;
         }
-        tasks[taskCount] = new Task(description);
+        tasks[taskCount] = task;
         taskCount++;
-        reply("added: " + description);
+        reply("Got it. I've added this task:\n  " + task
+                + "\nNow you have " + taskCount + " " + pluraliseTask(taskCount) + " in the list.");
     }
 
     private static void setTaskDone(String argument, boolean done) {
@@ -98,6 +160,10 @@ public class EV {
             formatted.append("\n").append(i + 1).append(".").append(tasks[i]);
         }
         return formatted.toString();
+    }
+
+    private static String pluraliseTask(int count) {
+        return count == 1 ? "task" : "tasks";
     }
 
     private static void reply(String message) {
