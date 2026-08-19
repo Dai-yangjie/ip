@@ -5,15 +5,6 @@ public class EV {
 
     private static final String LINE = "____________________________________________________________";
 
-    private static final String COMMAND_BYE = "bye";
-    private static final String COMMAND_LIST = "list";
-    private static final String COMMAND_MARK = "mark";
-    private static final String COMMAND_UNMARK = "unmark";
-    private static final String COMMAND_TODO = "todo";
-    private static final String COMMAND_DEADLINE = "deadline";
-    private static final String COMMAND_EVENT = "event";
-    private static final String COMMAND_DELETE = "delete";
-
     private static final String OPTION_BY = "/by";
     private static final String OPTION_FROM = "/from";
     private static final String OPTION_TO = "/to";
@@ -33,21 +24,20 @@ public class EV {
 
         Scanner in = new Scanner(System.in);
         while (in.hasNextLine()) {
-            String command = in.nextLine().trim();
-            if (command.isEmpty()) {
+            String line = in.nextLine().trim();
+            if (line.isEmpty()) {
                 continue;
             }
 
-            String[] parts = command.split(" ", 2);
-            String keyword = parts[0];
+            String[] parts = line.split(" ", 2);
             String argument = parts.length > 1 ? parts[1].trim() : "";
 
-            if (keyword.equals(COMMAND_BYE)) {
-                break;
-            }
-
             try {
-                handleCommand(keyword, argument);
+                Command command = Command.fromKeyword(parts[0]);
+                if (command == Command.BYE) {
+                    break;
+                }
+                handleCommand(command, argument);
             } catch (EVException e) {
                 reply(e.getMessage());
             }
@@ -56,24 +46,16 @@ public class EV {
         reply("Bye. Hope to see you again soon!");
     }
 
-    private static void handleCommand(String keyword, String argument) throws EVException {
-        if (keyword.equals(COMMAND_LIST)) {
-            reply(formatTasks());
-        } else if (keyword.equals(COMMAND_MARK)) {
-            setTaskDone(argument, true);
-        } else if (keyword.equals(COMMAND_UNMARK)) {
-            setTaskDone(argument, false);
-        } else if (keyword.equals(COMMAND_TODO)) {
-            addTodo(argument);
-        } else if (keyword.equals(COMMAND_DEADLINE)) {
-            addDeadline(argument);
-        } else if (keyword.equals(COMMAND_EVENT)) {
-            addEvent(argument);
-        } else if (keyword.equals(COMMAND_DELETE)) {
-            deleteTask(argument);
-        } else {
-            throw new EVException("I don't know what \"" + keyword + "\" means.\n"
-                    + "I understand: todo, deadline, event, list, mark, unmark, delete, bye.");
+    private static void handleCommand(Command command, String argument) throws EVException {
+        switch (command) {
+        case LIST -> reply(formatTasks());
+        case MARK -> setTaskDone(argument, true);
+        case UNMARK -> setTaskDone(argument, false);
+        case TODO -> addTodo(argument);
+        case DEADLINE -> addDeadline(argument);
+        case EVENT -> addEvent(argument);
+        case DELETE -> deleteTask(argument);
+        default -> throw new AssertionError("Unhandled command: " + command);
         }
     }
 
