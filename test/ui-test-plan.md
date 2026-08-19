@@ -861,6 +861,7 @@ ____________________________________________________________
 
 ## Not covered
 
-- The 100-task limit. Reaching it needs 100 setup commands, which would dominate the plan for a
-  branch that is one comparison. Worth adding if the storage strategy changes.
+- Large lists. There is no longer a fixed capacity now that tasks are held in an `ArrayList`, so
+  there is no "list is full" branch to cover. A case with hundreds of setup commands would
+  dominate the plan without testing any logic the smaller cases miss.
 - Interactive behaviour such as Ctrl+C, and terminal-specific rendering of the banner.

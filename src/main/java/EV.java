@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class EV {
@@ -17,8 +18,6 @@ public class EV {
     private static final String OPTION_FROM = "/from";
     private static final String OPTION_TO = "/to";
 
-    private static final int MAX_TASKS = 100;
-
     private static final String BANNER = " _______     __\n"
             + "|   ____|   /  \\\n"
             + "|  |__     |    |\n"
@@ -26,8 +25,7 @@ public class EV {
             + "|  |____    \\  /\n"
             + "|_______|    \\/\n";
 
-    private static Task[] tasks = new Task[MAX_TASKS];
-    private static int taskCount = 0;
+    private static ArrayList<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) {
         System.out.println(BANNER);
@@ -135,31 +133,20 @@ public class EV {
         addTask(new Event(description, from, to));
     }
 
-    private static void addTask(Task task) throws EVException {
-        if (taskCount == MAX_TASKS) {
-            throw new EVException("My list is full at " + MAX_TASKS + " tasks, "
-                    + "so I cannot add another one.");
-        }
-        tasks[taskCount] = task;
-        taskCount++;
+    private static void addTask(Task task) {
+        tasks.add(task);
         reply("Got it. I've added this task:\n  " + task
-                + "\nNow you have " + taskCount + " " + pluraliseTask(taskCount) + " in the list.");
+                + "\nNow you have " + tasks.size() + " " + pluraliseTask(tasks.size()) + " in the list.");
     }
 
     private static void deleteTask(String argument) throws EVException {
-        int index = parseTaskIndex(argument);
-        Task removed = tasks[index];
-        for (int i = index; i < taskCount - 1; i++) {
-            tasks[i] = tasks[i + 1];
-        }
-        taskCount--;
-        tasks[taskCount] = null;
+        Task removed = tasks.remove(parseTaskIndex(argument));
         reply("Noted. I've removed this task:\n  " + removed
-                + "\nNow you have " + taskCount + " " + pluraliseTask(taskCount) + " in the list.");
+                + "\nNow you have " + tasks.size() + " " + pluraliseTask(tasks.size()) + " in the list.");
     }
 
     private static void setTaskDone(String argument, boolean done) throws EVException {
-        Task task = tasks[parseTaskIndex(argument)];
+        Task task = tasks.get(parseTaskIndex(argument));
         if (done) {
             task.markAsDone();
         } else {
@@ -183,24 +170,24 @@ public class EV {
             throw new EVException("\"" + argument + "\" is not a task number.\n"
                     + "Try something like: mark 2");
         }
-        if (taskCount == 0) {
+        if (tasks.isEmpty()) {
             throw new EVException("Your list is empty, so there is no task to update yet.");
         }
-        if (taskNumber < 1 || taskNumber > taskCount) {
+        if (taskNumber < 1 || taskNumber > tasks.size()) {
             throw new EVException("There is no task " + taskNumber + " in your list.\n"
-                    + "You currently have " + taskCount + " " + pluraliseTask(taskCount)
-                    + ", so please pick a number between 1 and " + taskCount + ".");
+                    + "You currently have " + tasks.size() + " " + pluraliseTask(tasks.size())
+                    + ", so please pick a number between 1 and " + tasks.size() + ".");
         }
         return taskNumber - 1;
     }
 
     private static String formatTasks() {
-        if (taskCount == 0) {
+        if (tasks.isEmpty()) {
             return "There is nothing in your list yet.";
         }
         StringBuilder formatted = new StringBuilder("Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            formatted.append("\n").append(i + 1).append(".").append(tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            formatted.append("\n").append(i + 1).append(".").append(tasks.get(i));
         }
         return formatted.toString();
     }
