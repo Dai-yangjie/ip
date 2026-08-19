@@ -18,8 +18,7 @@ public class EV {
             + "|  |____    \\  /\n"
             + "|_______|    \\/\n";
 
-    private static String[] tasks = new String[MAX_TASKS];
-    private static boolean[] isDone = new boolean[MAX_TASKS];
+    private static Task[] tasks = new Task[MAX_TASKS];
     private static int taskCount = 0;
 
     public static void main(String[] args) {
@@ -48,15 +47,14 @@ public class EV {
         reply("Bye. Hope to see you again soon!");
     }
 
-    private static void addTask(String task) {
+    private static void addTask(String description) {
         if (taskCount == MAX_TASKS) {
             reply("Sorry, I can only remember " + MAX_TASKS + " tasks.");
             return;
         }
-        tasks[taskCount] = task;
-        isDone[taskCount] = false;
+        tasks[taskCount] = new Task(description);
         taskCount++;
-        reply("added: " + task);
+        reply("added: " + description);
     }
 
     private static void setTaskDone(String argument, boolean done) {
@@ -64,11 +62,16 @@ public class EV {
         if (index < 0) {
             return;
         }
-        isDone[index] = done;
+        Task task = tasks[index];
+        if (done) {
+            task.markAsDone();
+        } else {
+            task.markAsNotDone();
+        }
         String message = done
                 ? "Nice! I've marked this task as done:"
                 : "OK, I've marked this task as not done yet:";
-        reply(message + "\n  " + formatTask(index));
+        reply(message + "\n  " + task);
     }
 
     private static int parseTaskIndex(String argument) {
@@ -86,18 +89,13 @@ public class EV {
         return taskNumber - 1;
     }
 
-    private static String formatTask(int index) {
-        String statusIcon = isDone[index] ? "X" : " ";
-        return "[" + statusIcon + "] " + tasks[index];
-    }
-
     private static String formatTasks() {
         if (taskCount == 0) {
             return "There is nothing in your list yet.";
         }
         StringBuilder formatted = new StringBuilder("Here are the tasks in your list:");
         for (int i = 0; i < taskCount; i++) {
-            formatted.append("\n").append(i + 1).append(".").append(formatTask(i));
+            formatted.append("\n").append(i + 1).append(".").append(tasks[i]);
         }
         return formatted.toString();
     }
