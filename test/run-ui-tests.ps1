@@ -24,11 +24,13 @@ function Read-TestPlan([string]$path) {
         if ($line -match '^###\s+(TC-\d+)\s+(.*)$') {
             if ($null -ne $current) { $cases += $current }
             $current = [pscustomobject]@{
-                Id       = $matches[1]
-                Name     = $matches[2]
-                Aim      = ''
-                Input    = @()
-                Expected = @()
+                Id         = $matches[1]
+                Name       = $matches[2]
+                Aim        = ''
+                Input      = @()
+                Expected   = @()
+                DataBefore = $null
+                DataAfter  = $null
             }
             $section = ''
             $inFence = $false
@@ -43,6 +45,8 @@ function Read-TestPlan([string]$path) {
         }
         if ($line -match '^\*\*Input\*\*') { $section = 'input'; continue }
         if ($line -match '^\*\*Expected output\*\*') { $section = 'expected'; continue }
+        if ($line -match '^\*\*Data file before\*\*') { $section = 'databefore'; continue }
+        if ($line -match '^\*\*Data file after\*\*') { $section = 'dataafter'; continue }
 
         if ($section -eq 'aim') {
             if ($line.Trim() -eq '') {
@@ -58,6 +62,8 @@ function Read-TestPlan([string]$path) {
                 $inFence = $false
                 if ($section -eq 'input') { $current.Input = $buffer }
                 elseif ($section -eq 'expected') { $current.Expected = $buffer }
+                elseif ($section -eq 'databefore') { $current.DataBefore = @($buffer) }
+                elseif ($section -eq 'dataafter') { $current.DataAfter = @($buffer) }
                 $section = ''
                 $buffer = @()
             } elseif ($section -ne '') {
@@ -144,10 +150,21 @@ foreach ($case in $cases) {
     $outFile = Join-Path $workDir "$($case.Id).out.txt"
     $errFile = Join-Path $workDir "$($case.Id).err.txt"
 
+    $caseDir = Join-Path $workDir "$($case.Id).run"
+    if (Test-Path $caseDir) { Remove-Item -Path $caseDir -Recurse -Force }
+    New-Item -ItemType Directory -Path $caseDir | Out-Null
+    $dataFile = Join-Path $caseDir 'data\duke.txt'
+
+    if ($null -ne $case.DataBefore) {
+        New-Item -ItemType Directory -Path (Split-Path -Parent $dataFile) | Out-Null
+        Set-Content -Path $dataFile -Value @($case.DataBefore) -Encoding ascii
+    }
+
     Set-Content -Path $inFile -Value @($case.Input) -Encoding ascii
 
     Start-Process -FilePath $java `
         -ArgumentList @('-cp', $binDir, 'EV') `
+        -WorkingDirectory $caseDir `
         -RedirectStandardInput $inFile `
         -RedirectStandardOutput $outFile `
         -RedirectStandardError $errFile `
@@ -196,6 +213,49 @@ foreach ($case in $cases) {
         Write-Host ''
         Write-Host "Stopped at the first failure. $passed case(s) passed before it." -ForegroundColor Red
         exit 1
+    }
+
+    if ($null -ne $case.DataAfter) {
+        $expectedData = @($case.DataAfter)
+        $expectsNoFile = ($expectedData.Count -eq 1 -and $expectedData[0] -eq '(no file)')
+        $fileExists = Test-Path $dataFile
+        $actualData = if ($fileExists) { @(Get-Content -Path $dataFile) } else { @() }
+
+        $dataProblem = ''
+        if ($expectsNoFile) {
+            if ($fileExists) { $dataProblem = 'the data file exists but the case expects no data file.' }
+        } elseif (-not $fileExists) {
+            $dataProblem = 'the data file was not created.'
+        } else {
+            $maxDataLines = [Math]::Max($expectedData.Count, $actualData.Count)
+            for ($i = 0; $i -lt $maxDataLines; $i++) {
+                $e = if ($i -lt $expectedData.Count) { $expectedData[$i] } else { '<no more lines>' }
+                $a = if ($i -lt $actualData.Count) { $actualData[$i] } else { '<no more lines>' }
+                if ($e -ne $a) {
+                    $dataProblem = "data file line $($i + 1) differs: expected '$e' but found '$a'."
+                    break
+                }
+            }
+        }
+
+        if (-not $Quiet -and $dataProblem -eq '') {
+            Write-Host "  data file:" -ForegroundColor DarkGray
+            Show-Lines $actualData '    | '
+            Write-Host ''
+        }
+
+        if ($dataProblem -ne '') {
+            Write-Host "FAILED $($case.Id) $($case.Name)" -ForegroundColor Red
+            Write-Host "  Aim: $($case.Aim)"
+            Write-Host "  $dataProblem" -ForegroundColor Yellow
+            Write-Host "  Full expected data file ($($expectedData.Count) lines):"
+            Show-Lines $expectedData '    '
+            Write-Host "  Full actual data file ($($actualData.Count) lines):"
+            Show-Lines $actualData '    '
+            Write-Host ''
+            Write-Host "Stopped at the first failure. $passed case(s) passed before it." -ForegroundColor Red
+            exit 1
+        }
     }
 
     $passed++
