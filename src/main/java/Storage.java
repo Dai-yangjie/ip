@@ -91,11 +91,13 @@ public class Storage {
         }
         case Deadline.TYPE -> {
             requireFieldCount(fields, 4, line);
-            yield new Deadline(fields[2], fields[3]);
+            yield new Deadline(fields[2], DateTimes.fromFileFormat(fields[3]));
         }
         case Event.TYPE -> {
             requireFieldCount(fields, 5, line);
-            yield new Event(fields[2], fields[3], fields[4]);
+            yield new Event(fields[2],
+                    DateTimes.fromFileFormat(fields[3]),
+                    DateTimes.fromFileFormat(fields[4]));
         }
         default -> throw new EVException("Unknown task type: " + line);
         };

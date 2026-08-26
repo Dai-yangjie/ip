@@ -1,5 +1,6 @@
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,6 +11,14 @@ public class EV {
     private static final String OPTION_BY = "/by";
     private static final String OPTION_FROM = "/from";
     private static final String OPTION_TO = "/to";
+
+    private static final String DEADLINE_USAGE =
+            "Try something like: deadline return book /by 2019-12-02 1800";
+
+    private static final String EVENT_USAGE =
+            "Try something like: event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600";
+
+    private static final String ON_USAGE = "Try something like: on 2019-12-02";
 
     private static final String BANNER = " _______     __\n"
             + "|   ____|   /  \\\n"
@@ -71,6 +80,7 @@ public class EV {
     private static void handleCommand(Command command, String argument) throws EVException {
         switch (command) {
         case LIST -> reply(formatTasks());
+        case ON -> listTasksOn(argument);
         case MARK -> setTaskDone(argument, true);
         case UNMARK -> setTaskDone(argument, false);
         case TODO -> addTodo(argument);
@@ -93,19 +103,19 @@ public class EV {
         int byIndex = argument.indexOf(OPTION_BY);
         if (byIndex < 0) {
             throw new EVException("A deadline needs a " + OPTION_BY + " to say when it is due.\n"
-                    + "Try something like: deadline return book /by Sunday");
+                    + DEADLINE_USAGE);
         }
         String description = argument.substring(0, byIndex).trim();
         String by = argument.substring(byIndex + OPTION_BY.length()).trim();
         if (description.isEmpty()) {
             throw new EVException("A deadline needs a description before " + OPTION_BY + ".\n"
-                    + "Try something like: deadline return book /by Sunday");
+                    + DEADLINE_USAGE);
         }
         if (by.isEmpty()) {
             throw new EVException("A deadline needs a due time after " + OPTION_BY + ".\n"
-                    + "Try something like: deadline return book /by Sunday");
+                    + DEADLINE_USAGE);
         }
-        addTask(new Deadline(description, by));
+        addTask(new Deadline(description, DateTimes.parse(by)));
     }
 
     private static void addEvent(String argument) throws EVException {
@@ -113,28 +123,28 @@ public class EV {
         int toIndex = argument.indexOf(OPTION_TO);
         if (fromIndex < 0) {
             throw new EVException("An event needs a " + OPTION_FROM + " to say when it starts.\n"
-                    + "Try something like: event project meeting /from Mon 2pm /to 4pm");
+                    + EVENT_USAGE);
         }
         if (toIndex < 0) {
             throw new EVException("An event needs a " + OPTION_TO + " to say when it ends.\n"
-                    + "Try something like: event project meeting /from Mon 2pm /to 4pm");
+                    + EVENT_USAGE);
         }
         if (toIndex < fromIndex) {
             throw new EVException("Please put " + OPTION_FROM + " before " + OPTION_TO + ".\n"
-                    + "Try something like: event project meeting /from Mon 2pm /to 4pm");
+                    + EVENT_USAGE);
         }
         String description = argument.substring(0, fromIndex).trim();
         String from = argument.substring(fromIndex + OPTION_FROM.length(), toIndex).trim();
         String to = argument.substring(toIndex + OPTION_TO.length()).trim();
         if (description.isEmpty()) {
             throw new EVException("An event needs a description before " + OPTION_FROM + ".\n"
-                    + "Try something like: event project meeting /from Mon 2pm /to 4pm");
+                    + EVENT_USAGE);
         }
         if (from.isEmpty() || to.isEmpty()) {
             throw new EVException("An event needs a start time and an end time.\n"
-                    + "Try something like: event project meeting /from Mon 2pm /to 4pm");
+                    + EVENT_USAGE);
         }
-        addTask(new Event(description, from, to));
+        addTask(new Event(description, DateTimes.parse(from), DateTimes.parse(to)));
     }
 
     private static void addTask(Task task) {
@@ -194,6 +204,27 @@ public class EV {
                     + ", so please pick a number between 1 and " + tasks.size() + ".");
         }
         return taskNumber - 1;
+    }
+
+    private static void listTasksOn(String argument) throws EVException {
+        if (argument.isEmpty()) {
+            throw new EVException("Please tell me which date you are asking about.\n" + ON_USAGE);
+        }
+        LocalDate date = DateTimes.parse(argument).toLocalDate();
+
+        StringBuilder found = new StringBuilder();
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task.occursOn(date)) {
+                found.append("\n").append(i + 1).append(".").append(task);
+            }
+        }
+
+        if (found.length() == 0) {
+            reply("There is nothing on " + DateTimes.format(date) + ".");
+            return;
+        }
+        reply("Here are the tasks on " + DateTimes.format(date) + ":" + found);
     }
 
     private static String formatTasks() {
