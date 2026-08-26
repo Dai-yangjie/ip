@@ -6,10 +6,18 @@ import ev.task.Task;
 import ev.task.TaskList;
 import ev.ui.Ui;
 
+/**
+ * Removes one task from the list.
+ */
 public class DeleteCommand extends Command {
 
     private final int taskNumber;
 
+    /**
+     * Creates a command that will remove the given task.
+     *
+     * @param taskNumber the number the user gave, counting from 1.
+     */
     public DeleteCommand(int taskNumber) {
         this.taskNumber = taskNumber;
     }
