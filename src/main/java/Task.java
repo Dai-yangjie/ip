@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public abstract class Task {
 
     public static final String FIELD_SEPARATOR = " | ";
@@ -22,6 +24,10 @@ public abstract class Task {
 
     public void markAsNotDone() {
         isDone = false;
+    }
+
+    public boolean occursOn(LocalDate date) {
+        return false;
     }
 
     public abstract String toFileFormat();
