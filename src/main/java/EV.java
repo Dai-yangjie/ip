@@ -1,250 +1,57 @@
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 public class EV {
 
-    private static final String LINE = "____________________________________________________________";
-
-    private static final String OPTION_BY = "/by";
-    private static final String OPTION_FROM = "/from";
-    private static final String OPTION_TO = "/to";
-
-    private static final String DEADLINE_USAGE =
-            "Try something like: deadline return book /by 2019-12-02 1800";
-
-    private static final String EVENT_USAGE =
-            "Try something like: event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600";
-
-    private static final String ON_USAGE = "Try something like: on 2019-12-02";
-
-    private static final String BANNER = " _______     __\n"
-            + "|   ____|   /  \\\n"
-            + "|  |__     |    |\n"
-            + "|   __|    |    |\n"
-            + "|  |____    \\  /\n"
-            + "|_______|    \\/\n";
-
     private static final Path DATA_FILE = Paths.get("data", "duke.txt");
 
-    private static final Storage storage = new Storage(DATA_FILE);
+    private final Ui ui;
+    private final Storage storage;
+    private TaskList tasks;
 
-    private static ArrayList<Task> tasks = new ArrayList<>();
+    public EV(Path dataFile) {
+        ui = new Ui();
+        storage = new Storage(dataFile);
+        tasks = new TaskList();
+    }
 
     public static void main(String[] args) {
-        System.out.println(BANNER);
-        reply("Hello! I'm EV.\nWhat can I do for you?");
+        new EV(DATA_FILE).run();
+    }
+
+    public void run() {
+        ui.showBanner();
+        ui.showWelcome();
         loadTasks();
 
-        Scanner in = new Scanner(System.in);
-        while (in.hasNextLine()) {
-            String line = in.nextLine().trim();
+        boolean isExit = false;
+        while (!isExit && ui.hasNextCommand()) {
+            String line = ui.readCommand();
             if (line.isEmpty()) {
                 continue;
             }
-
-            String[] parts = line.split(" ", 2);
-            String argument = parts.length > 1 ? parts[1].trim() : "";
-
             try {
-                Command command = Command.fromKeyword(parts[0]);
-                if (command == Command.BYE) {
-                    break;
-                }
-                handleCommand(command, argument);
+                Command command = Parser.parse(line);
+                command.execute(tasks, ui, storage);
+                isExit = command.isExit();
             } catch (EVException e) {
-                reply(e.getMessage());
+                ui.showError(e.getMessage());
             }
         }
 
-        reply("Bye. Hope to see you again soon!");
+        ui.showFarewell();
     }
 
-    private static void loadTasks() {
+    private void loadTasks() {
         try {
-            tasks = storage.load();
+            tasks = new TaskList(storage.load());
         } catch (EVException e) {
-            reply(e.getMessage());
+            ui.showError(e.getMessage());
             return;
         }
         int skipped = storage.getSkippedLineCount();
         if (skipped > 0) {
-            reply("I skipped " + skipped + " line(s) in " + storage.getFile()
-                    + " because they were not in the format I expect.\n"
-                    + "The rest of your tasks were loaded, and the file will be tidied up on the next change.");
+            ui.showSkippedLines(skipped, storage.getFile());
         }
-    }
-
-    private static void handleCommand(Command command, String argument) throws EVException {
-        switch (command) {
-        case LIST -> reply(formatTasks());
-        case ON -> listTasksOn(argument);
-        case MARK -> setTaskDone(argument, true);
-        case UNMARK -> setTaskDone(argument, false);
-        case TODO -> addTodo(argument);
-        case DEADLINE -> addDeadline(argument);
-        case EVENT -> addEvent(argument);
-        case DELETE -> deleteTask(argument);
-        default -> throw new AssertionError("Unhandled command: " + command);
-        }
-    }
-
-    private static void addTodo(String argument) throws EVException {
-        if (argument.isEmpty()) {
-            throw new EVException("A todo needs a description.\n"
-                    + "Try something like: todo borrow book");
-        }
-        addTask(new Todo(argument));
-    }
-
-    private static void addDeadline(String argument) throws EVException {
-        int byIndex = argument.indexOf(OPTION_BY);
-        if (byIndex < 0) {
-            throw new EVException("A deadline needs a " + OPTION_BY + " to say when it is due.\n"
-                    + DEADLINE_USAGE);
-        }
-        String description = argument.substring(0, byIndex).trim();
-        String by = argument.substring(byIndex + OPTION_BY.length()).trim();
-        if (description.isEmpty()) {
-            throw new EVException("A deadline needs a description before " + OPTION_BY + ".\n"
-                    + DEADLINE_USAGE);
-        }
-        if (by.isEmpty()) {
-            throw new EVException("A deadline needs a due time after " + OPTION_BY + ".\n"
-                    + DEADLINE_USAGE);
-        }
-        addTask(new Deadline(description, DateTimes.parse(by)));
-    }
-
-    private static void addEvent(String argument) throws EVException {
-        int fromIndex = argument.indexOf(OPTION_FROM);
-        int toIndex = argument.indexOf(OPTION_TO);
-        if (fromIndex < 0) {
-            throw new EVException("An event needs a " + OPTION_FROM + " to say when it starts.\n"
-                    + EVENT_USAGE);
-        }
-        if (toIndex < 0) {
-            throw new EVException("An event needs a " + OPTION_TO + " to say when it ends.\n"
-                    + EVENT_USAGE);
-        }
-        if (toIndex < fromIndex) {
-            throw new EVException("Please put " + OPTION_FROM + " before " + OPTION_TO + ".\n"
-                    + EVENT_USAGE);
-        }
-        String description = argument.substring(0, fromIndex).trim();
-        String from = argument.substring(fromIndex + OPTION_FROM.length(), toIndex).trim();
-        String to = argument.substring(toIndex + OPTION_TO.length()).trim();
-        if (description.isEmpty()) {
-            throw new EVException("An event needs a description before " + OPTION_FROM + ".\n"
-                    + EVENT_USAGE);
-        }
-        if (from.isEmpty() || to.isEmpty()) {
-            throw new EVException("An event needs a start time and an end time.\n"
-                    + EVENT_USAGE);
-        }
-        addTask(new Event(description, DateTimes.parse(from), DateTimes.parse(to)));
-    }
-
-    private static void addTask(Task task) {
-        tasks.add(task);
-        reply("Got it. I've added this task:\n  " + task
-                + "\nNow you have " + tasks.size() + " " + pluraliseTask(tasks.size()) + " in the list.");
-        saveTasks();
-    }
-
-    private static void deleteTask(String argument) throws EVException {
-        Task removed = tasks.remove(parseTaskIndex(argument));
-        reply("Noted. I've removed this task:\n  " + removed
-                + "\nNow you have " + tasks.size() + " " + pluraliseTask(tasks.size()) + " in the list.");
-        saveTasks();
-    }
-
-    private static void setTaskDone(String argument, boolean done) throws EVException {
-        Task task = tasks.get(parseTaskIndex(argument));
-        if (done) {
-            task.markAsDone();
-        } else {
-            task.markAsNotDone();
-        }
-        String message = done
-                ? "Nice! I've marked this task as done:"
-                : "OK, I've marked this task as not done yet:";
-        reply(message + "\n  " + task);
-        saveTasks();
-    }
-
-    private static void saveTasks() {
-        try {
-            storage.save(tasks);
-        } catch (EVException e) {
-            reply(e.getMessage());
-        }
-    }
-
-    private static int parseTaskIndex(String argument) throws EVException {
-        if (argument.isEmpty()) {
-            throw new EVException("Please tell me which task number.\n"
-                    + "Try something like: mark 2");
-        }
-        int taskNumber;
-        try {
-            taskNumber = Integer.parseInt(argument);
-        } catch (NumberFormatException e) {
-            throw new EVException("\"" + argument + "\" is not a task number.\n"
-                    + "Try something like: mark 2");
-        }
-        if (tasks.isEmpty()) {
-            throw new EVException("Your list is empty, so there is no task to update yet.");
-        }
-        if (taskNumber < 1 || taskNumber > tasks.size()) {
-            throw new EVException("There is no task " + taskNumber + " in your list.\n"
-                    + "You currently have " + tasks.size() + " " + pluraliseTask(tasks.size())
-                    + ", so please pick a number between 1 and " + tasks.size() + ".");
-        }
-        return taskNumber - 1;
-    }
-
-    private static void listTasksOn(String argument) throws EVException {
-        if (argument.isEmpty()) {
-            throw new EVException("Please tell me which date you are asking about.\n" + ON_USAGE);
-        }
-        LocalDate date = DateTimes.parse(argument).toLocalDate();
-
-        StringBuilder found = new StringBuilder();
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            if (task.occursOn(date)) {
-                found.append("\n").append(i + 1).append(".").append(task);
-            }
-        }
-
-        if (found.length() == 0) {
-            reply("There is nothing on " + DateTimes.format(date) + ".");
-            return;
-        }
-        reply("Here are the tasks on " + DateTimes.format(date) + ":" + found);
-    }
-
-    private static String formatTasks() {
-        if (tasks.isEmpty()) {
-            return "There is nothing in your list yet.";
-        }
-        StringBuilder formatted = new StringBuilder("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            formatted.append("\n").append(i + 1).append(".").append(tasks.get(i));
-        }
-        return formatted.toString();
-    }
-
-    private static String pluraliseTask(int count) {
-        return count == 1 ? "task" : "tasks";
-    }
-
-    private static void reply(String message) {
-        System.out.println(LINE);
-        System.out.println(message);
-        System.out.println(LINE);
     }
 }
