@@ -1,3 +1,5 @@
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -16,11 +18,16 @@ public class EV {
             + "|  |____    \\  /\n"
             + "|_______|    \\/\n";
 
+    private static final Path DATA_FILE = Paths.get("data", "duke.txt");
+
+    private static final Storage storage = new Storage(DATA_FILE);
+
     private static ArrayList<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) {
         System.out.println(BANNER);
         reply("Hello! I'm EV.\nWhat can I do for you?");
+        loadTasks();
 
         Scanner in = new Scanner(System.in);
         while (in.hasNextLine()) {
@@ -44,6 +51,21 @@ public class EV {
         }
 
         reply("Bye. Hope to see you again soon!");
+    }
+
+    private static void loadTasks() {
+        try {
+            tasks = storage.load();
+        } catch (EVException e) {
+            reply(e.getMessage());
+            return;
+        }
+        int skipped = storage.getSkippedLineCount();
+        if (skipped > 0) {
+            reply("I skipped " + skipped + " line(s) in " + storage.getFile()
+                    + " because they were not in the format I expect.\n"
+                    + "The rest of your tasks were loaded, and the file will be tidied up on the next change.");
+        }
     }
 
     private static void handleCommand(Command command, String argument) throws EVException {
@@ -119,12 +141,14 @@ public class EV {
         tasks.add(task);
         reply("Got it. I've added this task:\n  " + task
                 + "\nNow you have " + tasks.size() + " " + pluraliseTask(tasks.size()) + " in the list.");
+        saveTasks();
     }
 
     private static void deleteTask(String argument) throws EVException {
         Task removed = tasks.remove(parseTaskIndex(argument));
         reply("Noted. I've removed this task:\n  " + removed
                 + "\nNow you have " + tasks.size() + " " + pluraliseTask(tasks.size()) + " in the list.");
+        saveTasks();
     }
 
     private static void setTaskDone(String argument, boolean done) throws EVException {
@@ -138,6 +162,15 @@ public class EV {
                 ? "Nice! I've marked this task as done:"
                 : "OK, I've marked this task as not done yet:";
         reply(message + "\n  " + task);
+        saveTasks();
+    }
+
+    private static void saveTasks() {
+        try {
+            storage.save(tasks);
+        } catch (EVException e) {
+            reply(e.getMessage());
+        }
     }
 
     private static int parseTaskIndex(String argument) throws EVException {

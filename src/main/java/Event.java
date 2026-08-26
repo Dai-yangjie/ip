@@ -1,5 +1,7 @@
 public class Event extends Task {
 
+    public static final String TYPE = "E";
+
     protected String from;
     protected String to;
 
@@ -10,7 +12,12 @@ public class Event extends Task {
     }
 
     @Override
+    public String toFileFormat() {
+        return encode(TYPE, from, to);
+    }
+
+    @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+        return "[" + TYPE + "]" + super.toString() + " (from: " + from + " to: " + to + ")";
     }
 }
