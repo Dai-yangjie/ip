@@ -14,14 +14,22 @@ public class Parser {
 
     private static final String ON_USAGE = "Try something like: on 2019-12-02";
 
-    public record ParsedCommand(Command command, String argument) {
-    }
-
-    public static ParsedCommand parse(String line) throws EVException {
+    public static Command parse(String line) throws EVException {
         String[] parts = line.split(" ", 2);
-        Command command = Command.fromKeyword(parts[0]);
+        CommandWord word = CommandWord.fromKeyword(parts[0]);
         String argument = parts.length > 1 ? parts[1].trim() : "";
-        return new ParsedCommand(command, argument);
+
+        return switch (word) {
+        case TODO -> new AddCommand(parseTodo(argument));
+        case DEADLINE -> new AddCommand(parseDeadline(argument));
+        case EVENT -> new AddCommand(parseEvent(argument));
+        case LIST -> new ListCommand();
+        case ON -> new OnCommand(parseDate(argument));
+        case MARK -> new MarkCommand(parseTaskNumber(argument), true);
+        case UNMARK -> new MarkCommand(parseTaskNumber(argument), false);
+        case DELETE -> new DeleteCommand(parseTaskNumber(argument));
+        case BYE -> new ExitCommand();
+        };
     }
 
     public static Todo parseTodo(String argument) throws EVException {

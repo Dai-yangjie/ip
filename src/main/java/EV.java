@@ -1,6 +1,5 @@
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 
 public class EV {
 
@@ -25,17 +24,16 @@ public class EV {
         ui.showWelcome();
         loadTasks();
 
-        while (ui.hasNextCommand()) {
+        boolean isExit = false;
+        while (!isExit && ui.hasNextCommand()) {
             String line = ui.readCommand();
             if (line.isEmpty()) {
                 continue;
             }
             try {
-                Parser.ParsedCommand parsed = Parser.parse(line);
-                if (parsed.command() == Command.BYE) {
-                    break;
-                }
-                execute(parsed.command(), parsed.argument());
+                Command command = Parser.parse(line);
+                command.execute(tasks, ui, storage);
+                isExit = command.isExit();
             } catch (EVException e) {
                 ui.showError(e.getMessage());
             }
@@ -54,56 +52,6 @@ public class EV {
         int skipped = storage.getSkippedLineCount();
         if (skipped > 0) {
             ui.showSkippedLines(skipped, storage.getFile());
-        }
-    }
-
-    private void execute(Command command, String argument) throws EVException {
-        switch (command) {
-        case LIST -> ui.showTasks(tasks);
-        case ON -> listTasksOn(argument);
-        case MARK -> setTaskDone(argument, true);
-        case UNMARK -> setTaskDone(argument, false);
-        case TODO -> addTask(Parser.parseTodo(argument));
-        case DEADLINE -> addTask(Parser.parseDeadline(argument));
-        case EVENT -> addTask(Parser.parseEvent(argument));
-        case DELETE -> deleteTask(argument);
-        default -> throw new AssertionError("Unhandled command: " + command);
-        }
-    }
-
-    private void addTask(Task task) {
-        tasks.add(task);
-        ui.showAdded(task, tasks);
-        saveTasks();
-    }
-
-    private void deleteTask(String argument) throws EVException {
-        Task removed = tasks.removeByNumber(Parser.parseTaskNumber(argument));
-        ui.showRemoved(removed, tasks);
-        saveTasks();
-    }
-
-    private void setTaskDone(String argument, boolean isDone) throws EVException {
-        Task task = tasks.getByNumber(Parser.parseTaskNumber(argument));
-        if (isDone) {
-            task.markAsDone();
-        } else {
-            task.markAsNotDone();
-        }
-        ui.showMarked(task, isDone);
-        saveTasks();
-    }
-
-    private void listTasksOn(String argument) throws EVException {
-        LocalDate date = Parser.parseDate(argument);
-        ui.showTasksOn(date, tasks);
-    }
-
-    private void saveTasks() {
-        try {
-            storage.save(tasks.asList());
-        } catch (EVException e) {
-            ui.showError(e.getMessage());
         }
     }
 }
