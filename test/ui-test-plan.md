@@ -46,6 +46,11 @@ and means a change to the greeting does not require editing all of them.
 
 Every input block ends with `bye` so the session terminates.
 
+A case may also declare the saved data file. **Data file before** seeds `data/duke.txt` in the
+case's own working folder before the session starts; **Data file after** is compared against the
+file once the session ends, and the single line `(no file)` means no file should exist. Each case
+runs in a fresh working folder, so cases never see each other's saved tasks.
+
 ## Test cases
 
 ### TC-01 Greet and exit
@@ -865,3 +870,203 @@ ____________________________________________________________
   there is no "list is full" branch to cover. A case with hundreds of setup commands would
   dominate the plan without testing any logic the smaller cases miss.
 - Interactive behaviour such as Ctrl+C, and terminal-specific rendering of the banner.
+
+### TC-25 Tasks are saved as they are added and marked
+
+**Aim:** Every change to the list is written to `data/duke.txt` immediately, one line per task,
+in the order the tasks appear in the list.
+
+**Input**
+
+```text
+todo read book
+deadline return book /by June 6th
+event project meeting /from Aug 6th 2pm /to 4pm
+mark 1
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: June 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+```
+
+**Data file after**
+
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm | 4pm
+```
+
+### TC-26 Saved tasks are loaded at startup
+
+**Aim:** A session that starts with an existing data file begins with those tasks already in the
+list, with their done status, type and times restored. A session that only reads the list leaves
+the file untouched.
+
+**Data file before**
+
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm | 4pm
+```
+
+**Input**
+
+```text
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][ ] return book (by: June 6th)
+3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+____________________________________________________________
+```
+
+**Data file after**
+
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm | 4pm
+```
+
+### TC-27 Deleting and unmarking are saved too
+
+**Aim:** `delete` and `unmark` rewrite the file as well, so the saved list always matches the list
+in memory.
+
+**Data file before**
+
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm | 4pm
+```
+
+**Input**
+
+```text
+delete 2
+unmark 1
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Noted. I've removed this task:
+  [D][ ] return book (by: June 6th)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] read book
+____________________________________________________________
+```
+
+**Data file after**
+
+```text
+T | 0 | read book
+E | 0 | project meeting | Aug 6th 2pm | 4pm
+```
+
+### TC-28 A missing data file is not an error
+
+**Aim:** The first run on a new computer has neither the `data` folder nor the file. EV must start
+with an empty list, say nothing about it, and not create the file until there is something to save.
+
+**Input**
+
+```text
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+There is nothing in your list yet.
+____________________________________________________________
+```
+
+**Data file after**
+
+```text
+(no file)
+```
+
+### TC-29 Corrupted lines are reported and dropped
+
+**Aim:** Lines that are not in the expected format (unknown type letter, status that is neither 0
+nor 1, wrong number of fields) are counted and skipped instead of crashing EV. The readable tasks
+still load, and the next change rewrites the file without the bad lines.
+
+**Data file before**
+
+```text
+T | 1 | read book
+X | 0 | mystery task
+D | 2 | return book | June 6th
+T | 0 |
+E | 0 | project meeting | Aug 6th 2pm | 4pm
+```
+
+**Input**
+
+```text
+todo water plants
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+I skipped 3 line(s) in data\duke.txt because they were not in the format I expect.
+The rest of your tasks were loaded, and the file will be tidied up on the next change.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] water plants
+Now you have 3 tasks in the list.
+____________________________________________________________
+```
+
+**Data file after**
+
+```text
+T | 1 | read book
+E | 0 | project meeting | Aug 6th 2pm | 4pm
+T | 0 | water plants
+```
