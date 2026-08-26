@@ -14,8 +14,8 @@ Options:
 - `.\test\run-ui-tests.ps1 -Filter TC-13` runs a single case (prefix match, so `-Filter TC-1` runs TC-10 to TC-19).
 - `.\test\run-ui-tests.ps1 -Quiet` prints only the pass/fail summary instead of the full session transcript.
 
-The runner compiles `src\main\java\*.java` into `out\` before running, so there is no need to
-compile by hand first. It stops at the first failing case and prints the expected and actual
+The runner compiles every `.java` file under `src\main\java\` into `out\` and runs the `ev.EV`
+class, so there is no need to compile by hand first. It stops at the first failing case and prints the expected and actual
 output side by side.
 
 ## Conventions

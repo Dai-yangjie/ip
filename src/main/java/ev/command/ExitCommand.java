@@ -1,3 +1,9 @@
+package ev.command;
+
+import ev.storage.Storage;
+import ev.task.TaskList;
+import ev.ui.Ui;
+
 public class ExitCommand extends Command {
 
     @Override

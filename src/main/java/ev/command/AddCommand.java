@@ -1,3 +1,11 @@
+package ev.command;
+
+import ev.EVException;
+import ev.storage.Storage;
+import ev.task.Task;
+import ev.task.TaskList;
+import ev.ui.Ui;
+
 public class AddCommand extends Command {
 
     private final Task task;
