@@ -28,7 +28,7 @@ public class DateTimes {
     private static final DateTimeFormatter DISPLAY_DATE_TIME =
             DateTimeFormatter.ofPattern("MMM d yyyy, h:mm a", Locale.ENGLISH);
 
-    public static LocalDateTime parse(String text) throws EVException {
+    public static LocalDateTime parse(String text) throws EvException {
         for (DateTimeFormatter format : DATE_TIME_FORMATS) {
             try {
                 return LocalDateTime.parse(text, format);
@@ -43,7 +43,7 @@ public class DateTimes {
                 continue;
             }
         }
-        throw new EVException("I don't understand the date \"" + text + "\".\n"
+        throw new EvException("I don't understand the date \"" + text + "\".\n"
                 + "Please use one of: " + ACCEPTED_FORMATS + ".");
     }
 
@@ -60,11 +60,11 @@ public class DateTimes {
         return dateTime.toString();
     }
 
-    public static LocalDateTime fromFileFormat(String text) throws EVException {
+    public static LocalDateTime fromFileFormat(String text) throws EvException {
         try {
             return LocalDateTime.parse(text);
         } catch (DateTimeParseException e) {
-            throw new EVException("Not a saved date: " + text);
+            throw new EvException("Not a saved date: " + text);
         }
     }
 }

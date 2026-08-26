@@ -3,7 +3,7 @@ package ev.task;
 import java.util.ArrayList;
 import java.util.List;
 
-import ev.EVException;
+import ev.EvException;
 
 public class TaskList {
 
@@ -29,7 +29,7 @@ public class TaskList {
         return tasks.get(index);
     }
 
-    public List<Task> asList() {
+    public List<Task> getTasks() {
         return tasks;
     }
 
@@ -37,12 +37,12 @@ public class TaskList {
         tasks.add(task);
     }
 
-    public Task getByNumber(int taskNumber) throws EVException {
+    public Task getByNumber(int taskNumber) throws EvException {
         requireExistingNumber(taskNumber);
         return tasks.get(taskNumber - 1);
     }
 
-    public Task removeByNumber(int taskNumber) throws EVException {
+    public Task removeByNumber(int taskNumber) throws EvException {
         requireExistingNumber(taskNumber);
         return tasks.remove(taskNumber - 1);
     }
@@ -51,12 +51,12 @@ public class TaskList {
         return tasks.size() + (tasks.size() == 1 ? " task" : " tasks");
     }
 
-    private void requireExistingNumber(int taskNumber) throws EVException {
+    private void requireExistingNumber(int taskNumber) throws EvException {
         if (tasks.isEmpty()) {
-            throw new EVException("Your list is empty, so there is no task to update yet.");
+            throw new EvException("Your list is empty, so there is no task to update yet.");
         }
         if (taskNumber < 1 || taskNumber > tasks.size()) {
-            throw new EVException("There is no task " + taskNumber + " in your list.\n"
+            throw new EvException("There is no task " + taskNumber + " in your list.\n"
                     + "You currently have " + describeSize()
                     + ", so please pick a number between 1 and " + tasks.size() + ".");
         }

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 
-import ev.EVException;
+import ev.EvException;
 
 public class TaskListTest {
 
@@ -38,14 +38,14 @@ public class TaskListTest {
     }
 
     @Test
-    public void getByNumber_firstAndLast_returnsMatchingTask() throws EVException {
+    public void getByNumber_firstAndLast_returnsMatchingTask() throws EvException {
         TaskList tasks = threeTasks();
         assertEquals("[T][ ] read book", tasks.getByNumber(1).toString());
         assertEquals("[T][ ] water plants", tasks.getByNumber(3).toString());
     }
 
     @Test
-    public void getByNumber_returnsLiveTask_markingIsVisibleInList() throws EVException {
+    public void getByNumber_returnsLiveTask_markingIsVisibleInList() throws EvException {
         TaskList tasks = threeTasks();
         tasks.getByNumber(2).markAsDone();
         assertEquals("[D][X] return book (by: Dec 2 2019, 6:00 PM)", tasks.get(1).toString());
@@ -53,27 +53,27 @@ public class TaskListTest {
 
     @Test
     public void getByNumber_zero_exceptionThrown() {
-        assertThrows(EVException.class, () -> threeTasks().getByNumber(0));
+        assertThrows(EvException.class, () -> threeTasks().getByNumber(0));
     }
 
     @Test
     public void getByNumber_negative_exceptionThrown() {
-        assertThrows(EVException.class, () -> threeTasks().getByNumber(-1));
+        assertThrows(EvException.class, () -> threeTasks().getByNumber(-1));
     }
 
     @Test
     public void getByNumber_justPastEnd_exceptionThrown() {
-        assertThrows(EVException.class, () -> threeTasks().getByNumber(4));
+        assertThrows(EvException.class, () -> threeTasks().getByNumber(4));
     }
 
     @Test
     public void getByNumber_emptyList_saysListIsEmpty() {
-        EVException thrown = assertThrows(EVException.class, () -> new TaskList().getByNumber(1));
+        EvException thrown = assertThrows(EvException.class, () -> new TaskList().getByNumber(1));
         assertTrue(thrown.getMessage().contains("empty"));
     }
 
     @Test
-    public void removeByNumber_middleTask_remainingTasksCloseTheGap() throws EVException {
+    public void removeByNumber_middleTask_remainingTasksCloseTheGap() throws EvException {
         TaskList tasks = threeTasks();
         assertEquals("[D][ ] return book (by: Dec 2 2019, 6:00 PM)", tasks.removeByNumber(2).toString());
         assertEquals(2, tasks.size());
@@ -82,7 +82,7 @@ public class TaskListTest {
     }
 
     @Test
-    public void removeByNumber_lastTask_listBecomesEmpty() throws EVException {
+    public void removeByNumber_lastTask_listBecomesEmpty() throws EvException {
         TaskList tasks = new TaskList();
         tasks.add(new Todo("only"));
         tasks.removeByNumber(1);
@@ -92,7 +92,7 @@ public class TaskListTest {
     @Test
     public void removeByNumber_outOfRange_nothingRemoved() {
         TaskList tasks = threeTasks();
-        assertThrows(EVException.class, () -> tasks.removeByNumber(4));
+        assertThrows(EvException.class, () -> tasks.removeByNumber(4));
         assertEquals(3, tasks.size());
     }
 
@@ -110,10 +110,10 @@ public class TaskListTest {
     }
 
     @Test
-    public void asList_reflectsLaterChanges() {
+    public void getTasks_reflectsLaterChanges() {
         TaskList tasks = threeTasks();
-        assertEquals(3, tasks.asList().size());
+        assertEquals(3, tasks.getTasks().size());
         tasks.add(new Todo("later"));
-        assertEquals(4, tasks.asList().size());
+        assertEquals(4, tasks.getTasks().size());
     }
 }

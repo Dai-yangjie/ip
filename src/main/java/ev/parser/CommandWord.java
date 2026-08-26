@@ -1,6 +1,6 @@
 package ev.parser;
 
-import ev.EVException;
+import ev.EvException;
 
 public enum CommandWord {
     TODO("todo"),
@@ -19,13 +19,13 @@ public enum CommandWord {
         this.keyword = keyword;
     }
 
-    public static CommandWord fromKeyword(String keyword) throws EVException {
+    public static CommandWord fromKeyword(String keyword) throws EvException {
         for (CommandWord command : values()) {
             if (command.keyword.equals(keyword)) {
                 return command;
             }
         }
-        throw new EVException("I don't know what \"" + keyword + "\" means.\n"
+        throw new EvException("I don't know what \"" + keyword + "\" means.\n"
                 + "I understand: " + listKeywords() + ".");
     }
 

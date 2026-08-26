@@ -19,14 +19,14 @@ public class Ui {
             + "|  |____    \\  /\n"
             + "|_______|    \\/\n";
 
-    private final Scanner in = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     public boolean hasNextCommand() {
-        return in.hasNextLine();
+        return scanner.hasNextLine();
     }
 
     public String readCommand() {
-        return in.nextLine().trim();
+        return scanner.nextLine().trim();
     }
 
     public void showBanner() {
