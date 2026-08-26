@@ -1,3 +1,7 @@
+package ev.parser;
+
+import ev.EVException;
+
 public enum CommandWord {
     TODO("todo"),
     DEADLINE("deadline"),

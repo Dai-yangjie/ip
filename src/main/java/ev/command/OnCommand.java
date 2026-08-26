@@ -1,4 +1,10 @@
+package ev.command;
+
 import java.time.LocalDate;
+
+import ev.storage.Storage;
+import ev.task.TaskList;
+import ev.ui.Ui;
 
 public class OnCommand extends Command {
 

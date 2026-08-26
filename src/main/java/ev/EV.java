@@ -1,5 +1,13 @@
+package ev;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import ev.command.Command;
+import ev.parser.Parser;
+import ev.storage.Storage;
+import ev.task.TaskList;
+import ev.ui.Ui;
 
 public class EV {
 

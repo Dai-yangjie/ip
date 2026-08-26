@@ -125,7 +125,7 @@ if (-not $javac -or -not $java) {
 }
 
 Write-Host "Compiling $srcDir ..."
-$sources = @(Get-ChildItem -Path (Join-Path $srcDir '*.java') | ForEach-Object { $_.FullName })
+$sources = @(Get-ChildItem -Path $srcDir -Filter '*.java' -Recurse | ForEach-Object { $_.FullName })
 & $javac -d $binDir $sources
 if ($LASTEXITCODE -ne 0) {
     Write-Host 'Compilation failed.' -ForegroundColor Red
@@ -163,7 +163,7 @@ foreach ($case in $cases) {
     Set-Content -Path $inFile -Value @($case.Input) -Encoding ascii
 
     Start-Process -FilePath $java `
-        -ArgumentList @('-cp', $binDir, 'EV') `
+        -ArgumentList @('-cp', $binDir, 'ev.EV') `
         -WorkingDirectory $caseDir `
         -RedirectStandardInput $inFile `
         -RedirectStandardOutput $outFile `
