@@ -6,10 +6,18 @@ import ev.task.Task;
 import ev.task.TaskList;
 import ev.ui.Ui;
 
+/**
+ * Adds one ready-made task to the end of the list.
+ */
 public class AddCommand extends Command {
 
     private final Task task;
 
+    /**
+     * Creates a command that will add the given task.
+     *
+     * @param task the task the parser built from the user's input.
+     */
     public AddCommand(Task task) {
         this.task = task;
     }
