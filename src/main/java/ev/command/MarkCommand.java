@@ -1,6 +1,6 @@
 package ev.command;
 
-import ev.EVException;
+import ev.EvException;
 import ev.storage.Storage;
 import ev.task.Task;
 import ev.task.TaskList;
@@ -29,7 +29,7 @@ public class MarkCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws EVException {
+    public void execute(TaskList tasks, Ui ui, Storage storage) throws EvException {
         Task task = tasks.getByNumber(taskNumber);
         if (isDone) {
             task.markAsDone();
@@ -37,6 +37,6 @@ public class MarkCommand extends Command {
             task.markAsNotDone();
         }
         ui.showMarked(task, isDone);
-        storage.save(tasks.asList());
+        storage.save(tasks.getTasks());
     }
 }

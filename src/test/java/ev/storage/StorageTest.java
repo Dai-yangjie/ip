@@ -15,7 +15,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import ev.EVException;
+import ev.EvException;
 import ev.task.Deadline;
 import ev.task.Event;
 import ev.task.Task;
@@ -48,21 +48,21 @@ public class StorageTest {
     }
 
     @Test
-    public void load_missingFile_emptyListAndNoError() throws EVException {
+    public void load_missingFile_emptyListAndNoError() throws EvException {
         Storage storage = new Storage(dataFile());
         assertTrue(storage.load().isEmpty());
         assertEquals(0, storage.getSkippedLineCount());
     }
 
     @Test
-    public void save_missingFolder_folderCreated() throws EVException {
+    public void save_missingFolder_folderCreated() throws EvException {
         assertFalse(Files.exists(dataFile().getParent()));
         new Storage(dataFile()).save(threeTasks());
         assertTrue(Files.exists(dataFile()));
     }
 
     @Test
-    public void saveThenLoad_allTaskTypes_tasksUnchanged() throws EVException {
+    public void saveThenLoad_allTaskTypes_tasksUnchanged() throws EvException {
         Storage storage = new Storage(dataFile());
         storage.save(threeTasks());
 
@@ -76,7 +76,7 @@ public class StorageTest {
     }
 
     @Test
-    public void save_calledTwice_fileHoldsOnlyLatestList() throws EVException {
+    public void save_calledTwice_fileHoldsOnlyLatestList() throws EvException {
         Storage storage = new Storage(dataFile());
         storage.save(threeTasks());
         storage.save(new ArrayList<>(List.of(new Todo("only this one"))));
@@ -87,7 +87,7 @@ public class StorageTest {
     }
 
     @Test
-    public void save_emptyList_emptyFileThatLoadsBack() throws EVException {
+    public void save_emptyList_emptyFileThatLoadsBack() throws EvException {
         Storage storage = new Storage(dataFile());
         storage.save(new ArrayList<>());
         assertTrue(Files.exists(dataFile()));
@@ -95,7 +95,7 @@ public class StorageTest {
     }
 
     @Test
-    public void load_blankLines_ignoredWithoutCountingAsCorrupted() throws IOException, EVException {
+    public void load_blankLines_ignoredWithoutCountingAsCorrupted() throws IOException, EvException {
         writeDataFile("T | 0 | read book", "", "   ", "T | 1 | water plants");
         Storage storage = new Storage(dataFile());
         assertEquals(2, storage.load().size());
@@ -103,7 +103,7 @@ public class StorageTest {
     }
 
     @Test
-    public void load_corruptedLines_skippedAndCountedButRestKept() throws IOException, EVException {
+    public void load_corruptedLines_skippedAndCountedButRestKept() throws IOException, EvException {
         writeDataFile(
                 "T | 1 | read book",
                 "X | 0 | unknown type",
@@ -124,7 +124,7 @@ public class StorageTest {
     }
 
     @Test
-    public void load_extraSpacesAroundSeparators_stillReadable() throws IOException, EVException {
+    public void load_extraSpacesAroundSeparators_stillReadable() throws IOException, EvException {
         writeDataFile("T|1|read book", "D  |  0  |  return book  |  2019-12-02T18:00");
         Storage storage = new Storage(dataFile());
         ArrayList<Task> loaded = storage.load();
@@ -134,7 +134,7 @@ public class StorageTest {
     }
 
     @Test
-    public void load_calledTwice_skippedCountNotAccumulated() throws IOException, EVException {
+    public void load_calledTwice_skippedCountNotAccumulated() throws IOException, EvException {
         writeDataFile("T | 1 | read book", "X | 0 | unknown type");
         Storage storage = new Storage(dataFile());
         storage.load();
@@ -146,6 +146,6 @@ public class StorageTest {
     public void load_folderInsteadOfFile_exceptionThrown() throws IOException {
         Files.createDirectories(dataFile());
         Storage storage = new Storage(dataFile());
-        assertThrows(EVException.class, storage::load);
+        assertThrows(EvException.class, storage::load);
     }
 }

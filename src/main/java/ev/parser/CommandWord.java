@@ -1,6 +1,6 @@
 package ev.parser;
 
-import ev.EVException;
+import ev.EvException;
 
 /**
  * The first word of a command, and the keyword the user has to type for it.
@@ -31,15 +31,15 @@ public enum CommandWord {
      *
      * @param keyword the first word of the line, already trimmed.
      * @return the matching command word.
-     * @throws EVException if no command uses that keyword. The message lists the ones that exist.
+     * @throws EvException if no command uses that keyword. The message lists the ones that exist.
      */
-    public static CommandWord fromKeyword(String keyword) throws EVException {
+    public static CommandWord fromKeyword(String keyword) throws EvException {
         for (CommandWord command : values()) {
             if (command.keyword.equals(keyword)) {
                 return command;
             }
         }
-        throw new EVException("I don't know what \"" + keyword + "\" means.\n"
+        throw new EvException("I don't know what \"" + keyword + "\" means.\n"
                 + "I understand: " + listKeywords() + ".");
     }
 

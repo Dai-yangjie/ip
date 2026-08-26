@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ev.DateTimes;
-import ev.EVException;
+import ev.EvException;
 import ev.task.Deadline;
 import ev.task.Event;
 import ev.task.Task;
@@ -33,7 +33,7 @@ public class Storage {
     private static final String SEPARATOR_PATTERN = "\\s*\\|\\s*";
 
     private final Path file;
-    private int skippedLineCount;
+    private int skippedLineCount = 0;
 
     /**
      * Creates storage backed by the given file.
@@ -51,9 +51,9 @@ public class Storage {
      * a damaged file still gives back everything that is left of it.
      *
      * @return the tasks that could be read, in the order they were saved.
-     * @throws EVException if the file itself cannot be read at all.
+     * @throws EvException if the file itself cannot be read at all.
      */
-    public ArrayList<Task> load() throws EVException {
+    public ArrayList<Task> load() throws EvException {
         ArrayList<Task> tasks = new ArrayList<>();
         skippedLineCount = 0;
 
@@ -61,7 +61,7 @@ public class Storage {
             return tasks;
         }
         if (Files.isDirectory(file)) {
-            throw new EVException(file + " is a folder, not a file, so I cannot read your saved tasks."
+            throw new EvException(file + " is a folder, not a file, so I cannot read your saved tasks."
                     + "\nI'm starting with an empty list.");
         }
 
@@ -69,7 +69,7 @@ public class Storage {
         try {
             lines = Files.readAllLines(file);
         } catch (IOException e) {
-            throw new EVException("I could not read " + file + " (" + e.getMessage() + ")."
+            throw new EvException("I could not read " + file + " (" + e.getMessage() + ")."
                     + "\nI'm starting with an empty list.");
         }
 
@@ -79,7 +79,7 @@ public class Storage {
             }
             try {
                 tasks.add(parseTask(line));
-            } catch (EVException e) {
+            } catch (EvException e) {
                 skippedLineCount++;
             }
         }
@@ -90,9 +90,9 @@ public class Storage {
      * Writes the given tasks, replacing whatever the file held before.
      *
      * @param tasks the tasks to save, in the order they should be numbered.
-     * @throws EVException if the file or the folder above it cannot be written.
+     * @throws EvException if the file or the folder above it cannot be written.
      */
-    public void save(List<Task> tasks) throws EVException {
+    public void save(List<Task> tasks) throws EvException {
         List<String> lines = new ArrayList<>();
         for (Task task : tasks) {
             lines.add(task.toFileFormat());
@@ -104,8 +104,10 @@ public class Storage {
             }
             Files.write(file, lines);
         } catch (IOException e) {
-            throw new EVException("I could not save your tasks to " + file + " (" + e.getMessage() + ")."
-                    + "\nThe list is still correct in this session, but the change may be lost after you exit.");
+            throw new EvException("I could not save your tasks to " + file
+                    + " (" + e.getMessage() + ")."
+                    + "\nThe list is still correct in this session,"
+                    + " but the change may be lost after you exit.");
         }
     }
 
@@ -132,17 +134,17 @@ public class Storage {
      *
      * @param line one non-blank line of the file.
      * @return the task it stands for.
-     * @throws EVException if the type, the done flag, the field count or a date is wrong.
+     * @throws EvException if the type, the done flag, the field count or a date is wrong.
      *     The message explains which, and is used for counting rather than shown to the user.
      */
-    private static Task parseTask(String line) throws EVException {
+    private static Task parseTask(String line) throws EvException {
         String[] fields = line.split(SEPARATOR_PATTERN);
         if (fields.length < 3) {
-            throw new EVException("Too few fields: " + line);
+            throw new EvException("Too few fields: " + line);
         }
         for (String field : fields) {
             if (field.isBlank()) {
-                throw new EVException("Blank field: " + line);
+                throw new EvException("Blank field: " + line);
             }
         }
 
@@ -161,13 +163,13 @@ public class Storage {
                     DateTimes.fromFileFormat(fields[3]),
                     DateTimes.fromFileFormat(fields[4]));
         }
-        default -> throw new EVException("Unknown task type: " + line);
+        default -> throw new EvException("Unknown task type: " + line);
         };
 
         if (fields[1].equals(Task.DONE_FLAG)) {
             task.markAsDone();
         } else if (!fields[1].equals(Task.NOT_DONE_FLAG)) {
-            throw new EVException("Status is neither " + Task.DONE_FLAG + " nor "
+            throw new EvException("Status is neither " + Task.DONE_FLAG + " nor "
                     + Task.NOT_DONE_FLAG + ": " + line);
         }
         return task;
@@ -179,11 +181,13 @@ public class Storage {
      * @param fields the fields the line was split into.
      * @param expected how many fields this type of task has.
      * @param line the line itself, for the message.
-     * @throws EVException if the count does not match.
+     * @throws EvException if the count does not match.
      */
-    private static void requireFieldCount(String[] fields, int expected, String line) throws EVException {
+    private static void requireFieldCount(String[] fields, int expected, String line)
+            throws EvException {
         if (fields.length != expected) {
-            throw new EVException("Expected " + expected + " fields but found " + fields.length + ": " + line);
+            throw new EvException("Expected " + expected + " fields but found "
+                    + fields.length + ": " + line);
         }
     }
 }

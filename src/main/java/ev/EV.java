@@ -64,7 +64,7 @@ public class EV {
                 Command command = Parser.parse(line);
                 command.execute(tasks, ui, storage);
                 isExit = command.isExit();
-            } catch (EVException e) {
+            } catch (EvException e) {
                 ui.showError(e.getMessage());
             }
         }
@@ -79,7 +79,7 @@ public class EV {
     private void loadTasks() {
         try {
             tasks = new TaskList(storage.load());
-        } catch (EVException e) {
+        } catch (EvException e) {
             ui.showError(e.getMessage());
             return;
         }

@@ -1,6 +1,6 @@
 package ev.command;
 
-import ev.EVException;
+import ev.EvException;
 import ev.storage.Storage;
 import ev.task.TaskList;
 import ev.ui.Ui;
@@ -20,9 +20,9 @@ public abstract class Command {
      * @param tasks the task list to read or change.
      * @param ui used to tell the user what happened.
      * @param storage used to save the task list when the command changes it.
-     * @throws EVException if the command cannot be carried out, or the tasks cannot be saved.
+     * @throws EvException if the command cannot be carried out, or the tasks cannot be saved.
      */
-    public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws EVException;
+    public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws EvException;
 
     /**
      * Returns whether EV should stop after this command.

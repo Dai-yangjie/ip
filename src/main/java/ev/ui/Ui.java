@@ -26,7 +26,7 @@ public class Ui {
             + "|  |____    \\  /\n"
             + "|_______|    \\/\n";
 
-    private final Scanner in = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     /**
      * Returns whether there is another line of input waiting.
@@ -34,7 +34,7 @@ public class Ui {
      * @return false once the input has run out, for example at the end of a piped file.
      */
     public boolean hasNextCommand() {
-        return in.hasNextLine();
+        return scanner.hasNextLine();
     }
 
     /**
@@ -43,7 +43,7 @@ public class Ui {
      * @return the line, with the spaces around it removed.
      */
     public String readCommand() {
-        return in.nextLine().trim();
+        return scanner.nextLine().trim();
     }
 
     /** Prints the EV banner. */

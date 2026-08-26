@@ -3,7 +3,7 @@ package ev.task;
 import java.util.ArrayList;
 import java.util.List;
 
-import ev.EVException;
+import ev.EvException;
 
 /**
  * The list of tasks the user is keeping.
@@ -66,7 +66,7 @@ public class TaskList {
      *
      * @return the backing list of tasks.
      */
-    public List<Task> asList() {
+    public List<Task> getTasks() {
         return tasks;
     }
 
@@ -84,9 +84,9 @@ public class TaskList {
      *
      * @param taskNumber the number shown next to the task, counting from 1.
      * @return the matching task.
-     * @throws EVException if the list is empty or there is no task with that number.
+     * @throws EvException if the list is empty or there is no task with that number.
      */
-    public Task getByNumber(int taskNumber) throws EVException {
+    public Task getByNumber(int taskNumber) throws EvException {
         requireExistingNumber(taskNumber);
         return tasks.get(taskNumber - 1);
     }
@@ -96,9 +96,9 @@ public class TaskList {
      *
      * @param taskNumber the number shown next to the task, counting from 1.
      * @return the task that was removed.
-     * @throws EVException if the list is empty or there is no task with that number.
+     * @throws EvException if the list is empty or there is no task with that number.
      */
-    public Task removeByNumber(int taskNumber) throws EVException {
+    public Task removeByNumber(int taskNumber) throws EvException {
         requireExistingNumber(taskNumber);
         return tasks.remove(taskNumber - 1);
     }
@@ -116,14 +116,14 @@ public class TaskList {
      * Checks that a task number the user gave actually points at a task.
      *
      * @param taskNumber the number to check, counting from 1.
-     * @throws EVException with a message for the user if the number cannot be used.
+     * @throws EvException with a message for the user if the number cannot be used.
      */
-    private void requireExistingNumber(int taskNumber) throws EVException {
+    private void requireExistingNumber(int taskNumber) throws EvException {
         if (tasks.isEmpty()) {
-            throw new EVException("Your list is empty, so there is no task to update yet.");
+            throw new EvException("Your list is empty, so there is no task to update yet.");
         }
         if (taskNumber < 1 || taskNumber > tasks.size()) {
-            throw new EVException("There is no task " + taskNumber + " in your list.\n"
+            throw new EvException("There is no task " + taskNumber + " in your list.\n"
                     + "You currently have " + describeSize()
                     + ", so please pick a number between 1 and " + tasks.size() + ".");
         }

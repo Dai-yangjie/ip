@@ -44,9 +44,9 @@ public class DateTimes {
      *
      * @param text what the user typed after {@code /by}, {@code /from}, {@code /to} or {@code on}.
      * @return the date and time it stands for.
-     * @throws EVException if the text is not in one of the {@link #ACCEPTED_FORMATS}.
+     * @throws EvException if the text is not in one of the {@link #ACCEPTED_FORMATS}.
      */
-    public static LocalDateTime parse(String text) throws EVException {
+    public static LocalDateTime parse(String text) throws EvException {
         for (DateTimeFormatter format : DATE_TIME_FORMATS) {
             try {
                 return LocalDateTime.parse(text, format);
@@ -61,7 +61,7 @@ public class DateTimes {
                 continue;
             }
         }
-        throw new EVException("I don't understand the date \"" + text + "\".\n"
+        throw new EvException("I don't understand the date \"" + text + "\".\n"
                 + "Please use one of: " + ACCEPTED_FORMATS + ".");
     }
 
@@ -107,13 +107,13 @@ public class DateTimes {
      *
      * @param text one field of a line in the save file.
      * @return the date and time it stands for.
-     * @throws EVException if the field is not in the form written by {@link #toFileFormat}.
+     * @throws EvException if the field is not in the form written by {@link #toFileFormat}.
      */
-    public static LocalDateTime fromFileFormat(String text) throws EVException {
+    public static LocalDateTime fromFileFormat(String text) throws EvException {
         try {
             return LocalDateTime.parse(text);
         } catch (DateTimeParseException e) {
-            throw new EVException("Not a saved date: " + text);
+            throw new EvException("Not a saved date: " + text);
         }
     }
 }

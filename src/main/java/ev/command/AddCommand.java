@@ -1,6 +1,6 @@
 package ev.command;
 
-import ev.EVException;
+import ev.EvException;
 import ev.storage.Storage;
 import ev.task.Task;
 import ev.task.TaskList;
@@ -23,9 +23,9 @@ public class AddCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws EVException {
+    public void execute(TaskList tasks, Ui ui, Storage storage) throws EvException {
         tasks.add(task);
         ui.showAdded(task, tasks);
-        storage.save(tasks.asList());
+        storage.save(tasks.getTasks());
     }
 }

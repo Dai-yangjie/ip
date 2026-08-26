@@ -6,14 +6,14 @@ package ev;
  * <p>Every message is written so that it can be printed as it is: it says what went
  * wrong and, where useful, shows an example of what to type instead.
  */
-public class EVException extends Exception {
+public class EvException extends Exception {
 
     /**
      * Creates an exception carrying a message for the user.
      *
      * @param message text to show the user, which may span several lines.
      */
-    public EVException(String message) {
+    public EvException(String message) {
         super(message);
     }
 }
