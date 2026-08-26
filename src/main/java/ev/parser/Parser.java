@@ -8,6 +8,7 @@ import ev.command.AddCommand;
 import ev.command.Command;
 import ev.command.DeleteCommand;
 import ev.command.ExitCommand;
+import ev.command.FindCommand;
 import ev.command.ListCommand;
 import ev.command.MarkCommand;
 import ev.command.OnCommand;
@@ -29,6 +30,8 @@ public class Parser {
 
     private static final String ON_USAGE = "Try something like: on 2019-12-02";
 
+    private static final String FIND_USAGE = "Try something like: find book";
+
     public static Command parse(String line) throws EVException {
         String[] parts = line.split(" ", 2);
         CommandWord word = CommandWord.fromKeyword(parts[0]);
@@ -40,6 +43,7 @@ public class Parser {
         case EVENT -> new AddCommand(parseEvent(argument));
         case LIST -> new ListCommand();
         case ON -> new OnCommand(parseDate(argument));
+        case FIND -> new FindCommand(parseKeyword(argument));
         case MARK -> new MarkCommand(parseTaskNumber(argument), true);
         case UNMARK -> new MarkCommand(parseTaskNumber(argument), false);
         case DELETE -> new DeleteCommand(parseTaskNumber(argument));
@@ -114,6 +118,13 @@ public class Parser {
             throw new EVException("\"" + argument + "\" is not a task number.\n"
                     + "Try something like: mark 2");
         }
+    }
+
+    public static String parseKeyword(String argument) throws EVException {
+        if (argument.isEmpty()) {
+            throw new EVException("Please tell me what to search for.\n" + FIND_USAGE);
+        }
+        return argument;
     }
 
     public static LocalDate parseDate(String argument) throws EVException {

@@ -15,6 +15,8 @@ import ev.command.AddCommand;
 import ev.command.Command;
 import ev.command.DeleteCommand;
 import ev.command.ExitCommand;
+import ev.command.FindCommand;
+import ev.command.FindCommand;
 import ev.command.ListCommand;
 import ev.command.MarkCommand;
 import ev.command.OnCommand;
@@ -28,6 +30,8 @@ public class ParserTest {
         assertInstanceOf(AddCommand.class, Parser.parse("event trip /from 2019-12-01 /to 2019-12-03"));
         assertInstanceOf(ListCommand.class, Parser.parse("list"));
         assertInstanceOf(OnCommand.class, Parser.parse("on 2019-12-02"));
+        assertInstanceOf(FindCommand.class, Parser.parse("find book"));
+        assertInstanceOf(FindCommand.class, Parser.parse("find book"));
         assertInstanceOf(MarkCommand.class, Parser.parse("mark 1"));
         assertInstanceOf(MarkCommand.class, Parser.parse("unmark 1"));
         assertInstanceOf(DeleteCommand.class, Parser.parse("delete 1"));
@@ -154,5 +158,20 @@ public class ParserTest {
     @Test
     public void parseDate_empty_exceptionThrown() {
         assertThrows(EVException.class, () -> Parser.parseDate(""));
+    }
+
+    @Test
+    public void parseKeyword_word_returnedUnchanged() throws EVException {
+        assertEquals("book", Parser.parseKeyword("book"));
+    }
+
+    @Test
+    public void parseKeyword_severalWords_keptTogether() throws EVException {
+        assertEquals("read book", Parser.parseKeyword("read book"));
+    }
+
+    @Test
+    public void parseKeyword_empty_exceptionThrown() {
+        assertThrows(EVException.class, () -> Parser.parseKeyword(""));
     }
 }

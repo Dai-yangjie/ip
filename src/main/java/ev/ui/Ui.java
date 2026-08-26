@@ -95,6 +95,21 @@ public class Ui {
         show("Here are the tasks on " + DateTimes.format(date) + ":" + listing);
     }
 
+    public void showMatchingTasks(String keyword, TaskList tasks) {
+        StringBuilder listing = new StringBuilder();
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task.hasKeyword(keyword)) {
+                appendNumbered(listing, i, task);
+            }
+        }
+        if (listing.length() == 0) {
+            show("No task in your list has \"" + keyword + "\" in its description.");
+            return;
+        }
+        show("Here are the matching tasks in your list:" + listing);
+    }
+
     private void appendNumbered(StringBuilder listing, int index, Task task) {
         listing.append("\n").append(index + 1).append(".").append(task);
     }

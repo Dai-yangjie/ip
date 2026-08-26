@@ -28,6 +28,10 @@ public abstract class Task {
         isDone = false;
     }
 
+    public boolean hasKeyword(String keyword) {
+        return description.toLowerCase().contains(keyword.toLowerCase());
+    }
+
     public boolean occursOn(LocalDate date) {
         return false;
     }

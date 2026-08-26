@@ -8,6 +8,7 @@ public enum CommandWord {
     EVENT("event"),
     LIST("list"),
     ON("on"),
+    FIND("find"),
     MARK("mark"),
     UNMARK("unmark"),
     DELETE("delete"),

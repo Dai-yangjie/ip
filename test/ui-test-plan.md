@@ -366,7 +366,7 @@ bye
 ```text
 ____________________________________________________________
 I don't know what "blah" means.
-I understand: todo, deadline, event, list, on, mark, unmark, delete, bye.
+I understand: todo, deadline, event, list, on, find, mark, unmark, delete, bye.
 ____________________________________________________________
 ```
 
@@ -565,7 +565,7 @@ Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 I don't know what "blah" means.
-I understand: todo, deadline, event, list, on, mark, unmark, delete, bye.
+I understand: todo, deadline, event, list, on, find, mark, unmark, delete, bye.
 ____________________________________________________________
 ____________________________________________________________
 A deadline needs a /by to say when it is due.
@@ -1248,5 +1248,133 @@ ____________________________________________________________
 ____________________________________________________________
 I don't understand the date "someday".
 Please use one of: 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
+____________________________________________________________
+```
+
+### TC-34 Find tasks by a word in the description
+
+**Aim:** `find` shows every task whose description contains the word, whatever its type or
+status, and keeps each task's number from the full list so it can be marked or deleted straight
+away. Tasks that do not match are left out.
+
+**Input**
+
+```text
+todo read book
+deadline return book /by 2019-06-06
+todo water plants
+mark 2
+find book
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: Jun 6 2019)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] water plants
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] return book (by: Jun 6 2019)
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] read book
+2.[D][X] return book (by: Jun 6 2019)
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read book
+2.[D][X] return book (by: Jun 6 2019)
+3.[T][ ] water plants
+____________________________________________________________
+```
+
+### TC-35 Finding is case insensitive and matches part of a word
+
+**Aim:** The search is on the description only, ignores capitalisation, and matches a word part
+so that `boo` finds `book`. A word that appears only in a date is not a match, since dates are no
+longer stored as text.
+
+**Input**
+
+```text
+todo Read Book
+event December trip /from 2019-12-01 /to 2019-12-03
+find boo
+find december
+find Dec
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] Read Book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] December trip (from: Dec 1 2019 to: Dec 3 2019)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] Read Book
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+2.[E][ ] December trip (from: Dec 1 2019 to: Dec 3 2019)
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+2.[E][ ] December trip (from: Dec 1 2019 to: Dec 3 2019)
+____________________________________________________________
+```
+
+### TC-36 Finding nothing, and finding without a keyword
+
+**Aim:** A search that matches nothing says so instead of printing an empty list, and `find`
+with no keyword is rejected with an example rather than listing everything.
+
+**Input**
+
+```text
+todo read book
+find plants
+find
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+No task in your list has "plants" in its description.
+____________________________________________________________
+____________________________________________________________
+Please tell me what to search for.
+Try something like: find book
 ____________________________________________________________
 ```
