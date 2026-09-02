@@ -53,16 +53,16 @@ public class Parser {
         String argument = parts.length > 1 ? parts[1].trim() : "";
 
         return switch (word) {
-        case TODO -> new AddCommand(parseTodo(argument));
-        case DEADLINE -> new AddCommand(parseDeadline(argument));
-        case EVENT -> new AddCommand(parseEvent(argument));
-        case LIST -> new ListCommand();
-        case ON -> new OnCommand(parseDate(argument));
-        case FIND -> new FindCommand(parseKeyword(argument));
-        case MARK -> new MarkCommand(parseTaskNumber(argument), true);
-        case UNMARK -> new MarkCommand(parseTaskNumber(argument), false);
-        case DELETE -> new DeleteCommand(parseTaskNumber(argument));
-        case BYE -> new ExitCommand();
+            case TODO -> new AddCommand(parseTodo(argument));
+            case DEADLINE -> new AddCommand(parseDeadline(argument));
+            case EVENT -> new AddCommand(parseEvent(argument));
+            case LIST -> new ListCommand();
+            case ON -> new OnCommand(parseDate(argument));
+            case FIND -> new FindCommand(parseKeyword(argument));
+            case MARK -> new MarkCommand(parseTaskNumber(argument), true);
+            case UNMARK -> new MarkCommand(parseTaskNumber(argument), false);
+            case DELETE -> new DeleteCommand(parseTaskNumber(argument));
+            case BYE -> new ExitCommand();
         };
     }
 

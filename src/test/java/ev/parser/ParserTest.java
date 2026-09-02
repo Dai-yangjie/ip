@@ -16,7 +16,6 @@ import ev.command.Command;
 import ev.command.DeleteCommand;
 import ev.command.ExitCommand;
 import ev.command.FindCommand;
-import ev.command.FindCommand;
 import ev.command.ListCommand;
 import ev.command.MarkCommand;
 import ev.command.OnCommand;

@@ -149,21 +149,21 @@ public class Storage {
         }
 
         Task task = switch (fields[0]) {
-        case Todo.TYPE -> {
-            requireFieldCount(fields, 3, line);
-            yield new Todo(fields[2]);
-        }
-        case Deadline.TYPE -> {
-            requireFieldCount(fields, 4, line);
-            yield new Deadline(fields[2], DateTimes.fromFileFormat(fields[3]));
-        }
-        case Event.TYPE -> {
-            requireFieldCount(fields, 5, line);
-            yield new Event(fields[2],
-                    DateTimes.fromFileFormat(fields[3]),
-                    DateTimes.fromFileFormat(fields[4]));
-        }
-        default -> throw new EvException("Unknown task type: " + line);
+            case Todo.TYPE -> {
+                requireFieldCount(fields, 3, line);
+                yield new Todo(fields[2]);
+            }
+            case Deadline.TYPE -> {
+                requireFieldCount(fields, 4, line);
+                yield new Deadline(fields[2], DateTimes.fromFileFormat(fields[3]));
+            }
+            case Event.TYPE -> {
+                requireFieldCount(fields, 5, line);
+                yield new Event(fields[2],
+                        DateTimes.fromFileFormat(fields[3]),
+                        DateTimes.fromFileFormat(fields[4]));
+            }
+            default -> throw new EvException("Unknown task type: " + line);
         };
 
         if (fields[1].equals(Task.DONE_FLAG)) {
