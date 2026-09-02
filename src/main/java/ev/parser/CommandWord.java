@@ -39,8 +39,8 @@ public enum CommandWord {
                 return command;
             }
         }
-        throw new EvException("I don't know what \"" + keyword + "\" means.\n"
-                + "I understand: " + listKeywords() + ".");
+        throw new EvException("I don't know what \"" + keyword + "\" means.",
+                "I understand: " + listKeywords() + ".");
     }
 
     /**
