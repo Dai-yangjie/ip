@@ -125,7 +125,12 @@ if (-not $javac -or -not $java) {
 }
 
 Write-Host "Compiling $srcDir ..."
-$sources = @(Get-ChildItem -Path $srcDir -Filter '*.java' -Recurse | ForEach-Object { $_.FullName })
+# The ev.gui package needs JavaFX, which only the Gradle build puts on the class path.
+# These tests drive the text UI, so those classes are left out of this compilation.
+$guiDir = Join-Path $srcDir 'ev\gui'
+$sources = @(Get-ChildItem -Path $srcDir -Filter '*.java' -Recurse |
+    Where-Object { -not $_.FullName.StartsWith($guiDir) } |
+    ForEach-Object { $_.FullName })
 & $javac -d $binDir $sources
 if ($LASTEXITCODE -ne 0) {
     Write-Host 'Compilation failed.' -ForegroundColor Red

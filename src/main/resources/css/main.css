@@ -1,0 +1,48 @@
+.root {
+    -fx-background-color: #f2f4f7;
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #c8ccd4;
+    -fx-border-width: 1px;
+    -fx-font: 14px "Segoe UI";
+}
+
+.button {
+    -fx-background-color: #3f7cac;
+    -fx-text-fill: white;
+    -fx-font: bold 14px "Segoe UI";
+}
+
+.button:hover {
+    -fx-background-color: #4f92c6;
+}
+
+.button:pressed {
+    -fx-background-color: #2f5f85;
+}
+
+.button:disabled {
+    -fx-background-color: #a8b3bf;
+}
+
+.scroll-pane,
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #c8ccd4;
+    -fx-background-radius: 1em;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-pref-height: 0;
+    -fx-opacity: 0;
+}
