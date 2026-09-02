@@ -123,8 +123,8 @@ public class TaskList {
             throw new EvException("Your list is empty, so there is no task to update yet.");
         }
         if (taskNumber < 1 || taskNumber > tasks.size()) {
-            throw new EvException("There is no task " + taskNumber + " in your list.\n"
-                    + "You currently have " + describeSize()
+            throw new EvException("There is no task " + taskNumber + " in your list.",
+                    "You currently have " + describeSize()
                     + ", so please pick a number between 1 and " + tasks.size() + ".");
         }
     }
