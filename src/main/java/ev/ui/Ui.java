@@ -2,53 +2,31 @@ package ev.ui;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.Scanner;
 
 import ev.DateTimes;
 import ev.task.Task;
 import ev.task.TaskList;
 
 /**
- * Everything the user sees and types.
+ * Puts EV's replies into words and keeps the latest one.
  *
- * <p>Each reply is printed between two divider lines so that the session reads as a
- * series of separate answers. Keeping the wording here means a different front end only
- * has to replace this class.
+ * <p>This class only decides what the chatbot says. Where the words end up is left to
+ * whoever is driving it: a caller takes the text with {@link #takeResponse()} and shows
+ * it, and {@link ConsoleUi} additionally prints it as it is produced.
  */
 public class Ui {
 
-    private static final String LINE = "____________________________________________________________";
-
-    private static final String BANNER = " _______     __\n"
-            + "|   ____|   /  \\\n"
-            + "|  |__     |    |\n"
-            + "|   __|    |    |\n"
-            + "|  |____    \\  /\n"
-            + "|_______|    \\/\n";
-
-    private final Scanner scanner = new Scanner(System.in);
+    private final StringBuilder response = new StringBuilder();
 
     /**
-     * Returns whether there is another line of input waiting.
+     * Returns everything said since the last call, and forgets it.
      *
-     * @return false once the input has run out, for example at the end of a piped file.
+     * @return the replies produced so far, or an empty string if there were none.
      */
-    public boolean hasNextCommand() {
-        return scanner.hasNextLine();
-    }
-
-    /**
-     * Reads the next line the user typed.
-     *
-     * @return the line, with the spaces around it removed.
-     */
-    public String readCommand() {
-        return scanner.nextLine().trim();
-    }
-
-    /** Prints the EV banner. */
-    public void showBanner() {
-        System.out.println(BANNER);
+    public String takeResponse() {
+        String taken = response.toString().trim();
+        response.setLength(0);
+        return taken;
     }
 
     /** Greets the user. */
@@ -183,6 +161,18 @@ public class Ui {
     }
 
     /**
+     * Records one reply. Subclasses override this to also send it somewhere.
+     *
+     * @param message the text of the reply, which may span several lines.
+     */
+    protected void show(String message) {
+        if (response.length() > 0) {
+            response.append("\n");
+        }
+        response.append(message);
+    }
+
+    /**
      * Appends one numbered task to a listing being built.
      *
      * @param listing the text built so far.
@@ -191,16 +181,5 @@ public class Ui {
      */
     private void appendNumbered(StringBuilder listing, int index, Task task) {
         listing.append("\n").append(index + 1).append(".").append(task);
-    }
-
-    /**
-     * Prints one reply between two divider lines.
-     *
-     * @param message the text of the reply, which may span several lines.
-     */
-    private void show(String message) {
-        System.out.println(LINE);
-        System.out.println(message);
-        System.out.println(LINE);
     }
 }

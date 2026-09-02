@@ -1,0 +1,15 @@
+.label {
+    -fx-background-color: #d7e8f5;
+    -fx-background-radius: 1em 1em 0 1em;
+    -fx-font: 14px "Segoe UI";
+    -fx-text-fill: #16232e;
+}
+
+.reply-label {
+    -fx-background-color: white;
+    -fx-background-radius: 1em 1em 1em 0;
+}
+
+#displayPicture {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.18), 8, 0.4, 3, 3);
+}
