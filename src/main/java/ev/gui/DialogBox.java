@@ -34,7 +34,7 @@ public class DialogBox extends HBox {
             fxmlLoader.setRoot(this);
             fxmlLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Cannot load /view/DialogBox.fxml", e);
         }
 
         assert dialog != null && displayPicture != null

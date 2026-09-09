@@ -31,7 +31,7 @@ public class Main extends Application {
             fxmlLoader.<MainWindow>getController().setEv(ev);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Cannot load /view/MainWindow.fxml", e);
         }
     }
 }
