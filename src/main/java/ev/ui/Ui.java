@@ -99,6 +99,15 @@ public class Ui {
     }
 
     /**
+     * Confirms that one detail of a task changed.
+     *
+     * @param task the task in its new state.
+     */
+    public void showUpdated(Task task) {
+        show("Got it. I've updated this task:\n  " + task);
+    }
+
+    /**
      * Shows the whole list, numbered from 1, or says so when there is nothing in it.
      *
      * @param tasks the list to show.

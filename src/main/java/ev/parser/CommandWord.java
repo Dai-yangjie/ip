@@ -21,6 +21,7 @@ public enum CommandWord {
     MARK("mark"),
     UNMARK("unmark"),
     DELETE("delete"),
+    UPDATE("update"),
     BYE("bye");
 
     private final String keyword;

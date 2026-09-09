@@ -19,6 +19,7 @@ import ev.command.FindCommand;
 import ev.command.ListCommand;
 import ev.command.MarkCommand;
 import ev.command.OnCommand;
+import ev.command.UpdateCommand;
 
 public class ParserTest {
 
@@ -29,7 +30,6 @@ public class ParserTest {
         assertInstanceOf(AddCommand.class, Parser.parse("event trip /from 2019-12-01 /to 2019-12-03"));
         assertInstanceOf(ListCommand.class, Parser.parse("list"));
         assertInstanceOf(OnCommand.class, Parser.parse("on 2019-12-02"));
-        assertInstanceOf(FindCommand.class, Parser.parse("find book"));
         assertInstanceOf(FindCommand.class, Parser.parse("find book"));
         assertInstanceOf(MarkCommand.class, Parser.parse("mark 1"));
         assertInstanceOf(MarkCommand.class, Parser.parse("unmark 1"));
@@ -172,5 +172,52 @@ public class ParserTest {
     @Test
     public void parseKeyword_empty_exceptionThrown() {
         assertThrows(EvException.class, () -> Parser.parseKeyword(""));
+    }
+
+
+    @Test
+    public void parse_update_returnsUpdateCommand() throws EvException {
+        assertInstanceOf(UpdateCommand.class, Parser.parse("update 1 /desc read book"));
+    }
+
+    @Test
+    public void parseUpdate_eachOption_accepted() throws EvException {
+        assertInstanceOf(UpdateCommand.class, Parser.parseUpdate("1 /desc read book"));
+        assertInstanceOf(UpdateCommand.class, Parser.parseUpdate("1 /by 2019-12-05 1800"));
+        assertInstanceOf(UpdateCommand.class, Parser.parseUpdate("1 /from 2019-12-05"));
+        assertInstanceOf(UpdateCommand.class, Parser.parseUpdate("1 /to 2019-12-05"));
+    }
+
+    @Test
+    public void parseUpdate_empty_exceptionThrown() {
+        assertThrows(EvException.class, () -> Parser.parseUpdate(""));
+    }
+
+    @Test
+    public void parseUpdate_noOption_exceptionThrown() {
+        EvException thrown = assertThrows(EvException.class, () -> Parser.parseUpdate("2"));
+        assertTrue(thrown.getMessage().contains("/desc"));
+    }
+
+    @Test
+    public void parseUpdate_noValue_exceptionThrown() {
+        assertThrows(EvException.class, () -> Parser.parseUpdate("2 /by"));
+    }
+
+    @Test
+    public void parseUpdate_twoOptions_exceptionThrown() {
+        EvException thrown = assertThrows(EvException.class, () ->
+                Parser.parseUpdate("2 /desc a /by 2019-12-05"));
+        assertTrue(thrown.getMessage().contains("one thing at a time"));
+    }
+
+    @Test
+    public void parseUpdate_noTaskNumber_exceptionThrown() {
+        assertThrows(EvException.class, () -> Parser.parseUpdate("/desc read book"));
+    }
+
+    @Test
+    public void parseUpdate_notANumber_exceptionThrown() {
+        assertThrows(EvException.class, () -> Parser.parseUpdate("two /desc x"));
     }
 }
