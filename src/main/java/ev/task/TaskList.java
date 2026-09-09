@@ -90,7 +90,10 @@ public class TaskList {
      */
     public Task getByNumber(int taskNumber) throws EvException {
         requireExistingNumber(taskNumber);
-        return tasks.get(taskNumber - 1);
+
+        Task task = tasks.get(taskNumber - 1);
+        assert task != null : "The list never holds a null task";
+        return task;
     }
 
     /**
@@ -102,7 +105,11 @@ public class TaskList {
      */
     public Task removeByNumber(int taskNumber) throws EvException {
         requireExistingNumber(taskNumber);
-        return tasks.remove(taskNumber - 1);
+
+        int sizeBefore = tasks.size();
+        Task removed = tasks.remove(taskNumber - 1);
+        assert tasks.size() == sizeBefore - 1 : "Removing a task must shorten the list by exactly one";
+        return removed;
     }
 
     /**

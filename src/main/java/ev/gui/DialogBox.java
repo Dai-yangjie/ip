@@ -37,6 +37,9 @@ public class DialogBox extends HBox {
             throw new IllegalStateException("Cannot load /view/DialogBox.fxml", e);
         }
 
+        assert dialog != null && displayPicture != null
+                : "DialogBox.fxml must declare fx:id dialog and displayPicture";
+
         dialog.setText(text);
         displayPicture.setImage(image);
     }

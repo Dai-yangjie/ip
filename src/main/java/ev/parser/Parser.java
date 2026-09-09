@@ -48,6 +48,8 @@ public class Parser {
      * @throws EvException if the keyword is unknown or the rest of the line is not usable.
      */
     public static Command parse(String line) throws EvException {
+        assert line != null && !line.isBlank() : "Blank lines are skipped by the caller, not parsed";
+
         String[] parts = line.split(" ", 2);
         CommandWord word = CommandWord.fromKeyword(parts[0]);
         String argument = parts.length > 1 ? parts[1].trim() : "";
