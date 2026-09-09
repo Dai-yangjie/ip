@@ -65,6 +65,7 @@ public abstract class Task {
      * @return true if the description contains it.
      */
     public boolean hasKeyword(String keyword) {
+        assert keyword != null && !keyword.isEmpty() : "An empty keyword would match every task";
         return description.toLowerCase().contains(keyword.toLowerCase());
     }
 

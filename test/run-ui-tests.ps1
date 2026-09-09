@@ -168,7 +168,7 @@ foreach ($case in $cases) {
     Set-Content -Path $inFile -Value @($case.Input) -Encoding ascii
 
     Start-Process -FilePath $java `
-        -ArgumentList @('-cp', $binDir, 'ev.EV') `
+        -ArgumentList @('-ea', '-cp', $binDir, 'ev.EV') `
         -WorkingDirectory $caseDir `
         -RedirectStandardInput $inFile `
         -RedirectStandardOutput $outFile `
