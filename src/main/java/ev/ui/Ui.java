@@ -2,6 +2,7 @@ package ev.ui;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.function.Predicate;
 
 import ev.DateTimes;
 import ev.task.Task;
@@ -101,15 +102,9 @@ public class Ui {
      * @param tasks the list to show.
      */
     public void showTasks(TaskList tasks) {
-        if (tasks.isEmpty()) {
-            show("There is nothing in your list yet.");
-            return;
-        }
-        StringBuilder listing = new StringBuilder("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            appendNumbered(listing, i, tasks.get(i));
-        }
-        show(listing.toString());
+        showSelected(tasks, task -> true,
+                "Here are the tasks in your list:",
+                "There is nothing in your list yet.");
     }
 
     /**
@@ -122,18 +117,9 @@ public class Ui {
      * @param tasks the list to look through.
      */
     public void showTasksOn(LocalDate date, TaskList tasks) {
-        StringBuilder listing = new StringBuilder();
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            if (task.occursOn(date)) {
-                appendNumbered(listing, i, task);
-            }
-        }
-        if (listing.length() == 0) {
-            show("There is nothing on " + DateTimes.format(date) + ".");
-            return;
-        }
-        show("Here are the tasks on " + DateTimes.format(date) + ":" + listing);
+        showSelected(tasks, task -> task.occursOn(date),
+                "Here are the tasks on " + DateTimes.format(date) + ":",
+                "There is nothing on " + DateTimes.format(date) + ".");
     }
 
     /**
@@ -146,18 +132,30 @@ public class Ui {
      * @param tasks the list to look through.
      */
     public void showMatchingTasks(String keyword, TaskList tasks) {
+        showSelected(tasks, task -> task.hasKeyword(keyword),
+                "Here are the matching tasks in your list:",
+                "No task in your list has \"" + keyword + "\" in its description.");
+    }
+
+    /**
+     * Shows the tasks a listing is interested in, keeping the number each one has in the
+     * full list so that it can be marked or deleted straight away.
+     *
+     * @param tasks the list to look through.
+     * @param isWanted decides which tasks belong in this listing.
+     * @param heading the line shown above the tasks, when there are any.
+     * @param noneFound the whole reply, when no task qualifies.
+     */
+    private void showSelected(TaskList tasks, Predicate<Task> isWanted,
+            String heading, String noneFound) {
         StringBuilder listing = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {
             Task task = tasks.get(i);
-            if (task.hasKeyword(keyword)) {
+            if (isWanted.test(task)) {
                 appendNumbered(listing, i, task);
             }
         }
-        if (listing.length() == 0) {
-            show("No task in your list has \"" + keyword + "\" in its description.");
-            return;
-        }
-        show("Here are the matching tasks in your list:" + listing);
+        show(listing.length() == 0 ? noneFound : heading + listing);
     }
 
     /**
