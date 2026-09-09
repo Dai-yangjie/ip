@@ -103,6 +103,7 @@ public class Storage {
                 Files.createDirectories(folder);
             }
             Files.write(file, lines);
+            assert Files.exists(file) : "Saving without an exception must leave the file on disk";
         } catch (IOException e) {
             throw new EvException("I could not save your tasks to " + file
                     + " (" + e.getMessage() + ").",

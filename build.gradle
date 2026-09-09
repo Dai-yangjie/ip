@@ -58,6 +58,9 @@ test {
 
 application {
     mainClass = 'ev.gui.Launcher'
+
+    // Assertions are off unless the JVM is told otherwise, which would make them dead code.
+    applicationDefaultJvmArgs = ['-ea']
 }
 
 jar {
