@@ -89,6 +89,8 @@ public class EV {
      * @return what EV has to say about it, including any error message.
      */
     public String getResponse(String input) {
+        assert tasks != null : "The task list is set in the constructor and only ever replaced by a load";
+
         try {
             Command command = Parser.parse(input);
             command.execute(tasks, ui, storage);

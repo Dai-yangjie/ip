@@ -57,6 +57,8 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
+        assert ev != null : "setEv must run before the window accepts input";
+
         String input = userInput.getText().trim();
         if (input.isEmpty()) {
             return;
