@@ -18,6 +18,11 @@ public class Todo extends Task {
     }
 
     @Override
+    protected String getTypeName() {
+        return "a todo";
+    }
+
+    @Override
     public String toFileFormat() {
         return encode(TYPE);
     }

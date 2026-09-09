@@ -2,12 +2,15 @@ package ev.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
+
+import ev.EvException;
 
 public class EventTest {
 
@@ -60,5 +63,37 @@ public class EventTest {
         assertTrue(meeting.occursOn(LocalDate.of(2019, 12, 2)));
         assertFalse(meeting.occursOn(LocalDate.of(2019, 12, 1)));
         assertFalse(meeting.occursOn(LocalDate.of(2019, 12, 3)));
+    }
+
+    @Test
+    public void applyUpdate_from_endKept() throws EvException {
+        Event camp = camp();
+        camp.applyUpdate(Event.OPTION_FROM, "2019-11-30 0800");
+        assertEquals("[E][ ] camp (from: Nov 30 2019, 8:00 AM to: Dec 3 2019, 5:00 PM)",
+                camp.toString());
+    }
+
+    @Test
+    public void applyUpdate_to_startKept() throws EvException {
+        Event camp = camp();
+        camp.applyUpdate(Event.OPTION_TO, "2019-12-04 1700");
+        assertEquals("[E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 4 2019, 5:00 PM)",
+                camp.toString());
+    }
+
+    @Test
+    public void applyUpdate_endBeforeStart_accepted() throws EvException {
+        Event camp = camp();
+        camp.applyUpdate(Event.OPTION_TO, "2019-11-01 1700");
+        assertEquals("[E][ ] camp (from: Dec 1 2019, 9:00 AM to: Nov 1 2019, 5:00 PM)",
+                camp.toString());
+    }
+
+    @Test
+    public void applyUpdate_optionThisTypeLacks_messageListsWhatItHas() {
+        EvException thrown = assertThrows(EvException.class, () ->
+                camp().applyUpdate(Deadline.OPTION_BY, "2019-12-05"));
+        assertTrue(thrown.getMessage().contains("an event"));
+        assertTrue(thrown.getMessage().contains("/desc, /from, /to"));
     }
 }

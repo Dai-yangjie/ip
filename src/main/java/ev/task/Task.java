@@ -2,6 +2,8 @@ package ev.task;
 
 import java.time.LocalDate;
 
+import ev.EvException;
+
 /**
  * A single item in the task list.
  *
@@ -19,6 +21,9 @@ public abstract class Task {
 
     /** Value written in the save file for a task that is not done yet. */
     public static final String NOT_DONE_FLAG = "0";
+
+    /** Option the user types to change the description, which every task has. */
+    public static final String OPTION_DESC = "/desc";
 
     /** What the user typed as the description of this task. */
     protected String description;
@@ -80,6 +85,43 @@ public abstract class Task {
      */
     public boolean occursOn(LocalDate date) {
         return false;
+    }
+
+    /**
+     * Changes one detail of this task, leaving everything else as it is.
+     *
+     * <p>Every task accepts {@link #OPTION_DESC}. Subclasses accept the options that name
+     * a field of their own and pass anything else back here to be rejected, so that a
+     * caller never has to ask what kind of task it is holding.
+     *
+     * @param option the option the user typed, such as {@code /by}.
+     * @param value the new value, already trimmed and not empty.
+     * @throws EvException if this kind of task has no such field, or the value cannot be
+     *     read. The task is left unchanged in both cases.
+     */
+    public void applyUpdate(String option, String value) throws EvException {
+        if (option.equals(OPTION_DESC)) {
+            description = value;
+            return;
+        }
+        throw new EvException("You cannot change " + option + " on " + getTypeName() + ".",
+                "On " + getTypeName() + " you can update: " + listUpdatableOptions());
+    }
+
+    /**
+     * Returns how this kind of task is named in a sentence, article included.
+     *
+     * @return text such as {@code "a todo"} or {@code "an event"}.
+     */
+    protected abstract String getTypeName();
+
+    /**
+     * Returns the options this kind of task accepts, in the order they are shown.
+     *
+     * @return the options, separated by commas.
+     */
+    protected String listUpdatableOptions() {
+        return OPTION_DESC;
     }
 
     /**

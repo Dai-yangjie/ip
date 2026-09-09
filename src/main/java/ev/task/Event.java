@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import ev.DateTimes;
+import ev.EvException;
 
 /**
  * A task that runs from one date and time to another.
@@ -12,6 +13,12 @@ public class Event extends Task {
 
     /** One-letter type of this task in the save file. */
     public static final String TYPE = "E";
+
+    /** Option the user types, both to set and to change when the event starts. */
+    public static final String OPTION_FROM = "/from";
+
+    /** Option the user types, both to set and to change when the event ends. */
+    public static final String OPTION_TO = "/to";
 
     /** When the event starts. */
     protected LocalDateTime from;
@@ -44,6 +51,29 @@ public class Event extends Task {
     @Override
     public boolean occursOn(LocalDate date) {
         return !date.isBefore(from.toLocalDate()) && !date.isAfter(to.toLocalDate());
+    }
+
+    @Override
+    public void applyUpdate(String option, String value) throws EvException {
+        if (option.equals(OPTION_FROM)) {
+            from = DateTimes.parse(value);
+            return;
+        }
+        if (option.equals(OPTION_TO)) {
+            to = DateTimes.parse(value);
+            return;
+        }
+        super.applyUpdate(option, value);
+    }
+
+    @Override
+    protected String getTypeName() {
+        return "an event";
+    }
+
+    @Override
+    protected String listUpdatableOptions() {
+        return super.listUpdatableOptions() + ", " + OPTION_FROM + ", " + OPTION_TO;
     }
 
     @Override

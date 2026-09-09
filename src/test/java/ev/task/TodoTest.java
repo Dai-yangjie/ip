@@ -2,11 +2,14 @@ package ev.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
+
+import ev.EvException;
 
 public class TodoTest {
 
@@ -66,5 +69,23 @@ public class TodoTest {
     @Test
     public void hasKeyword_wordNotInDescription_false() {
         assertFalse(new Todo("read book").hasKeyword("plants"));
+    }
+
+    @Test
+    public void applyUpdate_description_replaced() throws EvException {
+        Todo todo = new Todo("read book");
+        todo.markAsDone();
+        todo.applyUpdate(Task.OPTION_DESC, "read the whole book");
+        assertEquals("[T][X] read the whole book", todo.toString());
+    }
+
+    @Test
+    public void applyUpdate_optionThisTypeLacks_rejectedAndUnchanged() {
+        Todo todo = new Todo("read book");
+        EvException thrown = assertThrows(EvException.class, () ->
+                todo.applyUpdate("/by", "2019-12-05"));
+        assertTrue(thrown.getMessage().contains("a todo"));
+        assertTrue(thrown.getMessage().contains("/desc"));
+        assertEquals("[T][ ] read book", todo.toString());
     }
 }

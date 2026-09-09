@@ -366,7 +366,7 @@ bye
 ```text
 ____________________________________________________________
 I don't know what "blah" means.
-I understand: todo, deadline, event, list, on, find, mark, unmark, delete, bye.
+I understand: todo, deadline, event, list, on, find, mark, unmark, delete, update, bye.
 ____________________________________________________________
 ```
 
@@ -565,7 +565,7 @@ Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
 I don't know what "blah" means.
-I understand: todo, deadline, event, list, on, find, mark, unmark, delete, bye.
+I understand: todo, deadline, event, list, on, find, mark, unmark, delete, update, bye.
 ____________________________________________________________
 ____________________________________________________________
 A deadline needs a /by to say when it is due.
@@ -1376,5 +1376,228 @@ ____________________________________________________________
 ____________________________________________________________
 Please tell me what to search for.
 Try something like: find book
+____________________________________________________________
+```
+
+### TC-37 Update a task without deleting it
+
+**Aim:** `update` changes exactly one detail of an existing task. The done status, the other
+fields and the other tasks are all left alone, and the task keeps its number in the list.
+
+**Input**
+
+```text
+todo read book
+deadline return book /by 2019-06-06
+mark 1
+update 2 /by 2019-12-05 1800
+update 1 /desc read the whole book
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: Jun 6 2019)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+Got it. I've updated this task:
+  [D][ ] return book (by: Dec 5 2019, 6:00 PM)
+____________________________________________________________
+____________________________________________________________
+Got it. I've updated this task:
+  [T][X] read the whole book
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read the whole book
+2.[D][ ] return book (by: Dec 5 2019, 6:00 PM)
+____________________________________________________________
+```
+
+### TC-38 Update the two ends of an event separately
+
+**Aim:** `/from` and `/to` can be changed one at a time without disturbing each other, and the
+new times are shown in the usual display format.
+
+**Input**
+
+```text
+event camp /from 2019-12-01 0900 /to 2019-12-03 1700
+update 1 /to 2019-12-04 1700
+update 1 /from 2019-11-30 0800
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 3 2019, 5:00 PM)
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've updated this task:
+  [E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 4 2019, 5:00 PM)
+____________________________________________________________
+____________________________________________________________
+Got it. I've updated this task:
+  [E][ ] camp (from: Nov 30 2019, 8:00 AM to: Dec 4 2019, 5:00 PM)
+____________________________________________________________
+```
+
+### TC-39 Updates that are refused leave the task alone
+
+**Aim:** An option the task type does not have, a missing value, two options at once and an
+unreadable date are each refused with their own message. The closing `list` shows that none of
+them changed anything.
+
+**Input**
+
+```text
+todo read book
+deadline pay rent /by 2019-06-06
+update 1 /by 2019-12-05
+update 2 /from 2019-12-05
+update 2 /by
+update 2 /desc a /by 2019-12-05
+update 2 /by tomorrow
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] pay rent (by: Jun 6 2019)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+You cannot change /by on a todo.
+On a todo you can update: /desc
+____________________________________________________________
+____________________________________________________________
+You cannot change /from on a deadline.
+On a deadline you can update: /desc, /by
+____________________________________________________________
+____________________________________________________________
+An update needs a new value after /by.
+Try something like: update 2 /by 2019-12-05 1800
+____________________________________________________________
+____________________________________________________________
+Please change one thing at a time.
+Try something like: update 2 /by 2019-12-05 1800
+____________________________________________________________
+____________________________________________________________
+I don't understand the date "tomorrow".
+Please use one of: 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read book
+2.[D][ ] pay rent (by: Jun 6 2019)
+____________________________________________________________
+```
+
+### TC-40 An update is saved straight away
+
+**Aim:** A successful update rewrites the save file, so the new value survives a restart. A
+refused update leaves the file as it was.
+
+**Data file before**
+
+```text
+T | 0 | read book
+D | 0 | return book | 2019-06-06T00:00
+```
+
+**Input**
+
+```text
+update 2 /by 2019-12-05 1800
+update 1 /by 2019-12-05
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've updated this task:
+  [D][ ] return book (by: Dec 5 2019, 6:00 PM)
+____________________________________________________________
+____________________________________________________________
+You cannot change /by on a todo.
+On a todo you can update: /desc
+____________________________________________________________
+```
+
+**Data file after**
+
+```text
+T | 0 | read book
+D | 0 | return book | 2019-12-05T18:00
+```
+
+### TC-41 Update needs a task and something to change
+
+**Aim:** `update` on its own, with only a number, or with a number that is not a number, is
+rejected with a usable example rather than a stack trace.
+
+**Input**
+
+```text
+todo read book
+update
+update 1
+update two /desc x
+update 9 /desc x
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+Please tell me which task to update and what to change.
+Try something like: update 2 /by 2019-12-05 1800
+____________________________________________________________
+____________________________________________________________
+An update needs one of /desc, /by, /from or /to.
+Try something like: update 2 /by 2019-12-05 1800
+____________________________________________________________
+____________________________________________________________
+"two" is not a task number.
+Try something like: mark 2
+____________________________________________________________
+____________________________________________________________
+There is no task 9 in your list.
+You currently have 1 task, so please pick a number between 1 and 1.
 ____________________________________________________________
 ```
