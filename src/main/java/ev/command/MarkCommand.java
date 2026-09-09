@@ -18,14 +18,36 @@ public class MarkCommand extends Command {
     private final boolean isDone;
 
     /**
-     * Creates a command that will change the done status of the given task.
+     * Creates a command that will change the done status of the given task. Callers use
+     * {@link #mark(int)} or {@link #unmark(int)}, which say at the call site which way
+     * the status is going.
      *
      * @param taskNumber the number the user gave, counting from 1.
      * @param isDone true to mark the task as done, false to mark it as not done yet.
      */
-    public MarkCommand(int taskNumber, boolean isDone) {
+    private MarkCommand(int taskNumber, boolean isDone) {
         this.taskNumber = taskNumber;
         this.isDone = isDone;
+    }
+
+    /**
+     * Returns a command that marks the given task as done.
+     *
+     * @param taskNumber the number the user gave, counting from 1.
+     * @return the new command.
+     */
+    public static MarkCommand mark(int taskNumber) {
+        return new MarkCommand(taskNumber, true);
+    }
+
+    /**
+     * Returns a command that marks the given task as not done yet.
+     *
+     * @param taskNumber the number the user gave, counting from 1.
+     * @return the new command.
+     */
+    public static MarkCommand unmark(int taskNumber) {
+        return new MarkCommand(taskNumber, false);
     }
 
     @Override
