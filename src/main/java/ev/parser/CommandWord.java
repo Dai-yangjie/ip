@@ -1,5 +1,8 @@
 package ev.parser;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import ev.EvException;
 
 /**
@@ -49,13 +52,8 @@ public enum CommandWord {
      * @return the keywords, separated by commas.
      */
     public static String listKeywords() {
-        StringBuilder keywords = new StringBuilder();
-        for (CommandWord command : values()) {
-            if (keywords.length() > 0) {
-                keywords.append(", ");
-            }
-            keywords.append(command.keyword);
-        }
-        return keywords.toString();
+        return Arrays.stream(values())
+                .map(command -> command.keyword)
+                .collect(Collectors.joining(", "));
     }
 }
