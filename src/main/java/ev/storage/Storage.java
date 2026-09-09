@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import ev.DateTimes;
@@ -93,10 +94,9 @@ public class Storage {
      * @throws EvException if the file or the folder above it cannot be written.
      */
     public void save(List<Task> tasks) throws EvException {
-        List<String> lines = new ArrayList<>();
-        for (Task task : tasks) {
-            lines.add(task.toFileFormat());
-        }
+        List<String> lines = tasks.stream()
+                .map(Task::toFileFormat)
+                .toList();
         try {
             Path folder = file.getParent();
             if (folder != null) {
@@ -143,10 +143,8 @@ public class Storage {
         if (fields.length < 3) {
             throw new EvException("Too few fields: " + line);
         }
-        for (String field : fields) {
-            if (field.isBlank()) {
-                throw new EvException("Blank field: " + line);
-            }
+        if (Arrays.stream(fields).anyMatch(String::isBlank)) {
+            throw new EvException("Blank field: " + line);
         }
 
         Task task = switch (fields[0]) {

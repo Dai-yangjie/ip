@@ -3,6 +3,8 @@ package ev.ui;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import ev.DateTimes;
 import ev.task.Task;
@@ -148,14 +150,8 @@ public class Ui {
      */
     private void showSelected(TaskList tasks, Predicate<Task> isWanted,
             String heading, String noneFound) {
-        StringBuilder listing = new StringBuilder();
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            if (isWanted.test(task)) {
-                appendNumbered(listing, i, task);
-            }
-        }
-        show(listing.length() == 0 ? noneFound : heading + listing);
+        String listing = numberedListing(tasks, isWanted);
+        show(listing.isEmpty() ? noneFound : heading + listing);
     }
 
     /**
@@ -171,13 +167,19 @@ public class Ui {
     }
 
     /**
-     * Appends one numbered task to a listing being built.
+     * Returns the wanted tasks as numbered lines, one per line.
      *
-     * @param listing the text built so far.
-     * @param index position of the task in the full list, counting from 0.
-     * @param task the task to append.
+     * <p>The number is the position in the full list rather than in the result, so a task
+     * found by a search can be marked or deleted straight away.
+     *
+     * @param tasks the list to look through.
+     * @param isWanted decides which tasks belong in the listing.
+     * @return the lines, each starting with a line break, or an empty string if none qualify.
      */
-    private void appendNumbered(StringBuilder listing, int index, Task task) {
-        listing.append("\n").append(index + 1).append(".").append(task);
+    private String numberedListing(TaskList tasks, Predicate<Task> isWanted) {
+        return IntStream.range(0, tasks.size())
+                .filter(index -> isWanted.test(tasks.get(index)))
+                .mapToObj(index -> "\n" + (index + 1) + "." + tasks.get(index))
+                .collect(Collectors.joining());
     }
 }
