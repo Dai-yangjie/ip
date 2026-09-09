@@ -1,6 +1,7 @@
 package ev.task;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ev.EvException;
@@ -64,10 +65,11 @@ public class TaskList {
     /**
      * Returns the tasks as a plain list, for code that only needs to read them in order.
      *
-     * @return the backing list of tasks.
+     * @return an unmodifiable view of the tasks. It follows later changes to the list,
+     *     but cannot be used to make them: adding and removing go through this class.
      */
     public List<Task> getTasks() {
-        return tasks;
+        return Collections.unmodifiableList(tasks);
     }
 
     /**
