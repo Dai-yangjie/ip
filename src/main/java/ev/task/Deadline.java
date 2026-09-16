@@ -52,6 +52,11 @@ public class Deadline extends Task {
     }
 
     @Override
+    protected String describeDetails() {
+        return super.describeDetails() + FIELD_SEPARATOR + by;
+    }
+
+    @Override
     protected String getTypeName() {
         return "a deadline";
     }

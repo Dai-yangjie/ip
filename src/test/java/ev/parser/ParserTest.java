@@ -48,14 +48,14 @@ public class ParserTest {
     }
 
     @Test
-    public void parse_unknownKeyword_messageListsKeywords() {
+    public void parse_unknownKeyword_messageListsKeywords() throws EvException {
         EvException thrown = assertThrows(EvException.class, () -> Parser.parse("blah"));
         assertTrue(thrown.getMessage().contains("blah"));
         assertTrue(thrown.getMessage().contains(CommandWord.listKeywords()));
     }
 
     @Test
-    public void parse_keywordAsPrefixOfAnotherWord_notRecognised() {
+    public void parse_keywordAsPrefixOfAnotherWord_notRecognised() throws EvException {
         assertThrows(EvException.class, () -> Parser.parse("listing"));
         assertThrows(EvException.class, () -> Parser.parse("todos read book"));
     }
@@ -72,7 +72,7 @@ public class ParserTest {
     }
 
     @Test
-    public void parseTodo_emptyDescription_exceptionThrown() {
+    public void parseTodo_emptyDescription_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseTodo(""));
     }
 
@@ -89,22 +89,22 @@ public class ParserTest {
     }
 
     @Test
-    public void parseDeadline_missingBy_exceptionThrown() {
+    public void parseDeadline_missingBy_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseDeadline("return book"));
     }
 
     @Test
-    public void parseDeadline_missingDescription_exceptionThrown() {
+    public void parseDeadline_missingDescription_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseDeadline("/by 2019-12-02"));
     }
 
     @Test
-    public void parseDeadline_missingTime_exceptionThrown() {
+    public void parseDeadline_missingTime_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseDeadline("return book /by"));
     }
 
     @Test
-    public void parseDeadline_unreadableTime_exceptionThrown() {
+    public void parseDeadline_unreadableTime_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseDeadline("return book /by Sunday"));
     }
 
@@ -115,22 +115,22 @@ public class ParserTest {
     }
 
     @Test
-    public void parseEvent_missingFrom_exceptionThrown() {
+    public void parseEvent_missingFrom_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseEvent("trip /to 2019-12-03"));
     }
 
     @Test
-    public void parseEvent_missingTo_exceptionThrown() {
+    public void parseEvent_missingTo_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseEvent("trip /from 2019-12-01"));
     }
 
     @Test
-    public void parseEvent_toBeforeFrom_exceptionThrown() {
+    public void parseEvent_toBeforeFrom_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseEvent("trip /to 2019-12-03 /from 2019-12-01"));
     }
 
     @Test
-    public void parseEvent_missingDescription_exceptionThrown() {
+    public void parseEvent_missingDescription_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseEvent("/from 2019-12-01 /to 2019-12-03"));
     }
 
@@ -140,12 +140,12 @@ public class ParserTest {
     }
 
     @Test
-    public void parseTaskNumber_notANumber_exceptionThrown() {
+    public void parseTaskNumber_notANumber_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseTaskNumber("two"));
     }
 
     @Test
-    public void parseTaskNumber_empty_exceptionThrown() {
+    public void parseTaskNumber_empty_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseTaskNumber(""));
     }
 
@@ -155,7 +155,7 @@ public class ParserTest {
     }
 
     @Test
-    public void parseDate_empty_exceptionThrown() {
+    public void parseDate_empty_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseDate(""));
     }
 
@@ -170,7 +170,7 @@ public class ParserTest {
     }
 
     @Test
-    public void parseKeyword_empty_exceptionThrown() {
+    public void parseKeyword_empty_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseKeyword(""));
     }
 
@@ -189,35 +189,62 @@ public class ParserTest {
     }
 
     @Test
-    public void parseUpdate_empty_exceptionThrown() {
+    public void parseUpdate_empty_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseUpdate(""));
     }
 
     @Test
-    public void parseUpdate_noOption_exceptionThrown() {
+    public void parseUpdate_noOption_exceptionThrown() throws EvException {
         EvException thrown = assertThrows(EvException.class, () -> Parser.parseUpdate("2"));
         assertTrue(thrown.getMessage().contains("/desc"));
     }
 
     @Test
-    public void parseUpdate_noValue_exceptionThrown() {
+    public void parseUpdate_noValue_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseUpdate("2 /by"));
     }
 
     @Test
-    public void parseUpdate_twoOptions_exceptionThrown() {
+    public void parseUpdate_twoOptions_exceptionThrown() throws EvException {
         EvException thrown = assertThrows(EvException.class, () ->
                 Parser.parseUpdate("2 /desc a /by 2019-12-05"));
         assertTrue(thrown.getMessage().contains("One field at a time"));
     }
 
     @Test
-    public void parseUpdate_noTaskNumber_exceptionThrown() {
+    public void parseUpdate_noTaskNumber_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseUpdate("/desc read book"));
     }
 
     @Test
-    public void parseUpdate_notANumber_exceptionThrown() {
+    public void parseUpdate_notANumber_exceptionThrown() throws EvException {
         assertThrows(EvException.class, () -> Parser.parseUpdate("two /desc x"));
+    }
+
+    @Test
+    public void parseDeadline_byGivenTwice_exceptionThrown() {
+        EvException thrown = assertThrows(EvException.class, () ->
+                Parser.parseDeadline("return book /by 2019-12-01 /by 2019-12-02"));
+        assertTrue(thrown.getMessage().contains("may only appear once"));
+    }
+
+    @Test
+    public void parseEvent_fromOrToGivenTwice_exceptionThrown() {
+        assertThrows(EvException.class, () ->
+                Parser.parseEvent("camp /from 2019-12-01 /from 2019-12-02 /to 2019-12-03"));
+        assertThrows(EvException.class, () ->
+                Parser.parseEvent("camp /from 2019-12-01 /to 2019-12-02 /to 2019-12-03"));
+    }
+
+    @Test
+    public void parseTodo_descriptionHoldingTheSeparator_exceptionThrown() {
+        EvException thrown = assertThrows(EvException.class, () -> Parser.parseTodo("a | b"));
+        assertTrue(thrown.getMessage().contains("cannot contain"));
+    }
+
+    @Test
+    public void parseEvent_endBeforeStart_exceptionThrown() {
+        assertThrows(EvException.class, () ->
+                Parser.parseEvent("camp /from 2019-12-05 /to 2019-12-01"));
     }
 }

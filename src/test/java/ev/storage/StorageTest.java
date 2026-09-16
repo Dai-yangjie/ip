@@ -35,7 +35,7 @@ public class StorageTest {
         Files.write(dataFile(), List.of(lines));
     }
 
-    private ArrayList<Task> threeTasks() {
+    private ArrayList<Task> threeTasks() throws EvException {
         ArrayList<Task> tasks = new ArrayList<>();
         Todo todo = new Todo("read book");
         todo.markAsDone();

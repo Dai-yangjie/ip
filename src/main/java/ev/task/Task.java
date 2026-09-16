@@ -25,6 +25,9 @@ public abstract class Task {
     /** Option the user types to change the description, which every task has. */
     public static final String OPTION_DESC = "/desc";
 
+    /** The character the save file reserves, and so the one a description may not hold. */
+    public static final String SEPARATOR_CHARACTER = "|";
+
     /** What the user typed as the description of this task. */
     protected String description;
 
@@ -101,11 +104,53 @@ public abstract class Task {
      */
     public void applyUpdate(String option, String value) throws EvException {
         if (option.equals(OPTION_DESC)) {
+            requireSavableDescription(value);
             description = value;
             return;
         }
         throw new EvException("No " + option + " on " + getTypeName() + ".",
                 "It takes: " + listUpdatableOptions());
+    }
+
+    /**
+     * Checks that a description can survive being saved and read back.
+     *
+     * <p>The save file separates fields with a pipe, so a description holding one would be
+     * split into the wrong fields on the next start and the task would be dropped as
+     * unreadable. Refusing it while the user is still looking is far better than losing
+     * their task overnight.
+     *
+     * @param description the description the user typed.
+     * @throws EvException if it holds the character the save file reserves.
+     */
+    public static void requireSavableDescription(String description) throws EvException {
+        if (description.contains(SEPARATOR_CHARACTER)) {
+            throw new EvException("A description cannot contain \"" + SEPARATOR_CHARACTER + "\".",
+                    "EV uses it to separate fields when it saves your tasks.");
+        }
+    }
+
+    /**
+     * Returns everything about this task except whether it is done, so that two tasks can
+     * be compared by what they are about.
+     *
+     * @return the description, plus whatever else the subclass holds.
+     */
+    protected String describeDetails() {
+        return description;
+    }
+
+    /**
+     * Returns whether the other task is about the same thing as this one.
+     *
+     * <p>Done status is left out: a task that has been finished is still the same task, so
+     * adding it again is a duplicate rather than a new piece of work.
+     *
+     * @param other the task to compare with.
+     * @return true if both are the same kind of task with the same details.
+     */
+    public boolean hasSameDetails(Task other) {
+        return getClass() == other.getClass() && describeDetails().equals(other.describeDetails());
     }
 
     /**

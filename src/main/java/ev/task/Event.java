@@ -33,10 +33,29 @@ public class Event extends Task {
      * @param from when the event starts.
      * @param to when the event ends.
      */
-    public Event(String description, LocalDateTime from, LocalDateTime to) {
+    public Event(String description, LocalDateTime from, LocalDateTime to) throws EvException {
         super(description);
+        requireOrderedTimes(from, to);
         this.from = from;
         this.to = to;
+    }
+
+    /**
+     * Checks that an event does not end before it starts.
+     *
+     * <p>Both ends are checked here rather than at each place that sets one, so that an
+     * event cannot reach an impossible state whether it is being created, loaded from the
+     * save file, or edited one end at a time.
+     *
+     * @param from when the event starts.
+     * @param to when the event ends.
+     * @throws EvException if the end comes before the start.
+     */
+    private static void requireOrderedTimes(LocalDateTime from, LocalDateTime to) throws EvException {
+        if (to.isBefore(from)) {
+            throw new EvException("An event cannot end before it starts.",
+                    "It would run from " + DateTimes.format(from) + " to " + DateTimes.format(to) + ".");
+        }
     }
 
     /**
@@ -56,14 +75,23 @@ public class Event extends Task {
     @Override
     public void applyUpdate(String option, String value) throws EvException {
         if (option.equals(OPTION_FROM)) {
-            from = DateTimes.parse(value);
+            LocalDateTime newFrom = DateTimes.parse(value);
+            requireOrderedTimes(newFrom, to);
+            from = newFrom;
             return;
         }
         if (option.equals(OPTION_TO)) {
-            to = DateTimes.parse(value);
+            LocalDateTime newTo = DateTimes.parse(value);
+            requireOrderedTimes(from, newTo);
+            to = newTo;
             return;
         }
         super.applyUpdate(option, value);
+    }
+
+    @Override
+    protected String describeDetails() {
+        return super.describeDetails() + FIELD_SEPARATOR + from + FIELD_SEPARATOR + to;
     }
 
     @Override

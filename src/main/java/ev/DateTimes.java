@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Locale;
 
 /**
@@ -22,13 +23,13 @@ public class DateTimes {
             "2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800";
 
     private static final DateTimeFormatter[] DATE_TIME_FORMATS = {
-        DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm", Locale.ENGLISH),
-        DateTimeFormatter.ofPattern("d/M/yyyy HHmm", Locale.ENGLISH)
+        strict("uuuu-MM-dd HHmm"),
+        strict("d/M/uuuu HHmm")
     };
 
     private static final DateTimeFormatter[] DATE_FORMATS = {
-        DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH),
-        DateTimeFormatter.ofPattern("d/M/yyyy", Locale.ENGLISH)
+        strict("uuuu-MM-dd"),
+        strict("d/M/uuuu")
     };
 
     private static final DateTimeFormatter DISPLAY_DATE =
@@ -36,6 +37,22 @@ public class DateTimes {
 
     private static final DateTimeFormatter DISPLAY_DATE_TIME =
             DateTimeFormatter.ofPattern("MMM d yyyy, h:mm a", Locale.ENGLISH);
+
+    /**
+     * Returns a formatter that refuses dates the calendar does not have.
+     *
+     * <p>The default resolver quietly moves an impossible date to the nearest real one, so
+     * that 30 February becomes 28 February and the user is never told. Strict resolving
+     * rejects it instead, which is why the year is written as {@code uuuu}: strict mode
+     * will not resolve a year of era without an era to go with it.
+     *
+     * @param pattern the pattern to read dates with.
+     * @return the formatter, pinned to English so the output cannot follow the machine.
+     */
+    private static DateTimeFormatter strict(String pattern) {
+        return DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH)
+                .withResolverStyle(ResolverStyle.STRICT);
+    }
 
     /**
      * Reads a date, and optionally a time, as typed by the user.
