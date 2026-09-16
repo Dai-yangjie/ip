@@ -26,6 +26,7 @@ public class EV {
     private final Storage storage;
     private TaskList tasks;
     private boolean isExit = false;
+    private boolean isErrorResponse = false;
 
     /**
      * Creates a chatbot that replies without printing anything itself.
@@ -91,12 +92,14 @@ public class EV {
     public String getResponse(String input) {
         assert tasks != null : "The task list is set in the constructor and only ever replaced by a load";
 
+        isErrorResponse = false;
         try {
             Command command = Parser.parse(input);
             command.execute(tasks, ui, storage);
             isExit = command.isExit();
         } catch (EvException e) {
             ui.showError(e.getMessage());
+            isErrorResponse = true;
         }
         return ui.takeResponse();
     }
@@ -108,6 +111,18 @@ public class EV {
      */
     public boolean isExit() {
         return isExit;
+    }
+
+    /**
+     * Returns whether the last reply was EV refusing to do something.
+     *
+     * <p>A front end can use this to show a refusal differently from an answer. The text
+     * itself already explains the problem, so this only says which kind of reply it is.
+     *
+     * @return true if the last call to {@link #getResponse(String)} ended in an error.
+     */
+    public boolean isErrorResponse() {
+        return isErrorResponse;
     }
 
     /**
