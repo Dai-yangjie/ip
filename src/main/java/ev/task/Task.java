@@ -104,8 +104,8 @@ public abstract class Task {
             description = value;
             return;
         }
-        throw new EvException("You cannot change " + option + " on " + getTypeName() + ".",
-                "On " + getTypeName() + " you can update: " + listUpdatableOptions());
+        throw new EvException("No " + option + " on " + getTypeName() + ".",
+                "It takes: " + listUpdatableOptions());
     }
 
     /**

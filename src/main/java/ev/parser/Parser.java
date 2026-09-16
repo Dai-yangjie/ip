@@ -30,16 +30,16 @@ import ev.task.Todo;
 public class Parser {
 
     private static final String DEADLINE_USAGE =
-            "Try something like: deadline return book /by 2019-12-02 1800";
+            "e.g. deadline return book /by 2019-12-02 1800";
 
     private static final String EVENT_USAGE =
-            "Try something like: event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600";
+            "e.g. event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600";
 
-    private static final String ON_USAGE = "Try something like: on 2019-12-02";
+    private static final String ON_USAGE = "e.g. on 2019-12-02";
 
-    private static final String FIND_USAGE = "Try something like: find book";
+    private static final String FIND_USAGE = "e.g. find book";
 
-    private static final String UPDATE_USAGE = "Try something like: update 2 /by 2019-12-05 1800";
+    private static final String UPDATE_USAGE = "e.g. update 2 /by 2019-12-05 1800";
 
     /** The options an update may name, in the order they are offered to the user. */
     private static final List<String> UPDATABLE_OPTIONS =
@@ -84,7 +84,7 @@ public class Parser {
     public static Todo parseTodo(String argument) throws EvException {
         if (argument.isEmpty()) {
             throw new EvException("A todo needs a description.",
-                    "Try something like: todo borrow book");
+                    "e.g. todo borrow book");
         }
         return new Todo(argument);
     }
@@ -99,17 +99,17 @@ public class Parser {
     public static Deadline parseDeadline(String argument) throws EvException {
         int byIndex = argument.indexOf(Deadline.OPTION_BY);
         if (byIndex < 0) {
-            throw new EvException("A deadline needs a " + Deadline.OPTION_BY + " to say when it is due.",
+            throw new EvException("A deadline needs " + Deadline.OPTION_BY + ".",
                     DEADLINE_USAGE);
         }
         String description = argument.substring(0, byIndex).trim();
         String by = argument.substring(byIndex + Deadline.OPTION_BY.length()).trim();
         if (description.isEmpty()) {
-            throw new EvException("A deadline needs a description before " + Deadline.OPTION_BY + ".",
+            throw new EvException("Missing description before " + Deadline.OPTION_BY + ".",
                     DEADLINE_USAGE);
         }
         if (by.isEmpty()) {
-            throw new EvException("A deadline needs a due time after " + Deadline.OPTION_BY + ".",
+            throw new EvException("Missing date after " + Deadline.OPTION_BY + ".",
                     DEADLINE_USAGE);
         }
         return new Deadline(description, DateTimes.parse(by));
@@ -127,26 +127,26 @@ public class Parser {
         int fromIndex = argument.indexOf(Event.OPTION_FROM);
         int toIndex = argument.indexOf(Event.OPTION_TO);
         if (fromIndex < 0) {
-            throw new EvException("An event needs a " + Event.OPTION_FROM + " to say when it starts.",
+            throw new EvException("An event needs " + Event.OPTION_FROM + ".",
                     EVENT_USAGE);
         }
         if (toIndex < 0) {
-            throw new EvException("An event needs a " + Event.OPTION_TO + " to say when it ends.",
+            throw new EvException("An event needs " + Event.OPTION_TO + ".",
                     EVENT_USAGE);
         }
         if (toIndex < fromIndex) {
-            throw new EvException("Please put " + Event.OPTION_FROM + " before " + Event.OPTION_TO + ".",
+            throw new EvException(Event.OPTION_FROM + " must come before " + Event.OPTION_TO + ".",
                     EVENT_USAGE);
         }
         String description = argument.substring(0, fromIndex).trim();
         String from = argument.substring(fromIndex + Event.OPTION_FROM.length(), toIndex).trim();
         String to = argument.substring(toIndex + Event.OPTION_TO.length()).trim();
         if (description.isEmpty()) {
-            throw new EvException("An event needs a description before " + Event.OPTION_FROM + ".",
+            throw new EvException("Missing description before " + Event.OPTION_FROM + ".",
                     EVENT_USAGE);
         }
         if (from.isEmpty() || to.isEmpty()) {
-            throw new EvException("An event needs a start time and an end time.",
+            throw new EvException("Missing date after " + Event.OPTION_FROM + " or " + Event.OPTION_TO + ".",
                     EVENT_USAGE);
         }
         return new Event(description, DateTimes.parse(from), DateTimes.parse(to));
@@ -164,14 +164,14 @@ public class Parser {
      */
     public static int parseTaskNumber(String argument) throws EvException {
         if (argument.isEmpty()) {
-            throw new EvException("Please tell me which task number.",
-                    "Try something like: mark 2");
+            throw new EvException("Which task?",
+                    "e.g. mark 2");
         }
         try {
             return Integer.parseInt(argument);
         } catch (NumberFormatException e) {
-            throw new EvException("\"" + argument + "\" is not a task number.",
-                    "Try something like: mark 2");
+            throw new EvException("\"" + argument + "\" is not a number.",
+                    "e.g. mark 2");
         }
     }
 
@@ -187,7 +187,7 @@ public class Parser {
      */
     public static String parseKeyword(String argument) throws EvException {
         if (argument.isEmpty()) {
-            throw new EvException("Please tell me what to search for.", FIND_USAGE);
+            throw new EvException("Search for what?", FIND_USAGE);
         }
         return argument;
     }
@@ -206,7 +206,7 @@ public class Parser {
      */
     public static UpdateCommand parseUpdate(String argument) throws EvException {
         if (argument.isEmpty()) {
-            throw new EvException("Please tell me which task to update and what to change.",
+            throw new EvException("Update what?",
                     UPDATE_USAGE);
         }
 
@@ -214,7 +214,7 @@ public class Parser {
         int optionIndex = argument.indexOf(option);
         String value = argument.substring(optionIndex + option.length()).trim();
         if (value.isEmpty()) {
-            throw new EvException("An update needs a new value after " + option + ".",
+            throw new EvException("Missing value after " + option + ".",
                     UPDATE_USAGE);
         }
 
@@ -235,12 +235,12 @@ public class Parser {
                 .toList();
 
         if (found.isEmpty()) {
-            throw new EvException("An update needs one of " + Task.OPTION_DESC + ", "
+            throw new EvException("Name a field: " + Task.OPTION_DESC + ", "
                     + Deadline.OPTION_BY + ", " + Event.OPTION_FROM + " or " + Event.OPTION_TO + ".",
                     UPDATE_USAGE);
         }
         if (found.size() > 1) {
-            throw new EvException("Please change one thing at a time.", UPDATE_USAGE);
+            throw new EvException("One field at a time.", UPDATE_USAGE);
         }
         return found.get(0);
     }
@@ -254,7 +254,7 @@ public class Parser {
      */
     public static LocalDate parseDate(String argument) throws EvException {
         if (argument.isEmpty()) {
-            throw new EvException("Please tell me which date you are asking about.", ON_USAGE);
+            throw new EvException("Which date?", ON_USAGE);
         }
         return DateTimes.parse(argument).toLocalDate();
     }

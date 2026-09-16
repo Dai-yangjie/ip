@@ -129,12 +129,11 @@ public class TaskList {
      */
     private void requireExistingNumber(int taskNumber) throws EvException {
         if (tasks.isEmpty()) {
-            throw new EvException("Your list is empty, so there is no task to update yet.");
+            throw new EvException("Your list is empty.");
         }
         if (taskNumber < 1 || taskNumber > tasks.size()) {
-            throw new EvException("There is no task " + taskNumber + " in your list.",
-                    "You currently have " + describeSize()
-                    + ", so please pick a number between 1 and " + tasks.size() + ".");
+            throw new EvException("No task " + taskNumber + ".",
+                    "Pick between 1 and " + tasks.size() + ".");
         }
     }
 }

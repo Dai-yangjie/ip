@@ -61,8 +61,8 @@ public class DateTimes {
                 continue;
             }
         }
-        throw new EvException("I don't understand the date \"" + text + "\".",
-                "Please use one of: " + ACCEPTED_FORMATS + ".");
+        throw new EvException("Not a date: \"" + text + "\"",
+                "Use " + ACCEPTED_FORMATS + ".");
     }
 
     /**

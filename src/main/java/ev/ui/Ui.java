@@ -34,12 +34,12 @@ public class Ui {
 
     /** Greets the user. */
     public void showWelcome() {
-        show("Hello! I'm EV.\nWhat can I do for you?");
+        show("Hi Peter.\nEV online. What do you need?");
     }
 
     /** Says goodbye to the user. */
     public void showFarewell() {
-        show("Bye. Hope to see you again soon!");
+        show("Signing off, Peter.");
     }
 
     /**
@@ -58,9 +58,8 @@ public class Ui {
      * @param file the save file they were skipped in.
      */
     public void showSkippedLines(int count, Path file) {
-        show("I skipped " + count + " line(s) in " + file
-                + " because they were not in the format I expect.\n"
-                + "The rest of your tasks were loaded, and the file will be tidied up on the next change.");
+        show("Skipped " + count + " unreadable line(s) in " + file + ".\n"
+                + "The rest loaded. Next change rewrites the file.");
     }
 
     /**
@@ -70,8 +69,7 @@ public class Ui {
      * @param tasks the list it went into, used to report the new size.
      */
     public void showAdded(Task task, TaskList tasks) {
-        show("Got it. I've added this task:\n  " + task
-                + "\nNow you have " + tasks.describeSize() + " in the list.");
+        show("Added.\n  " + task + "\n" + tasks.describeSize() + ".");
     }
 
     /**
@@ -81,8 +79,7 @@ public class Ui {
      * @param tasks the list it came out of, used to report the new size.
      */
     public void showRemoved(Task task, TaskList tasks) {
-        show("Noted. I've removed this task:\n  " + task
-                + "\nNow you have " + tasks.describeSize() + " in the list.");
+        show("Removed.\n  " + task + "\n" + tasks.describeSize() + ".");
     }
 
     /**
@@ -93,8 +90,8 @@ public class Ui {
      */
     public void showMarked(Task task, boolean isDone) {
         String message = isDone
-                ? "Nice! I've marked this task as done:"
-                : "OK, I've marked this task as not done yet:";
+                ? "Done."
+                : "Back to not done.";
         show(message + "\n  " + task);
     }
 
@@ -104,7 +101,7 @@ public class Ui {
      * @param task the task in its new state.
      */
     public void showUpdated(Task task) {
-        show("Got it. I've updated this task:\n  " + task);
+        show("Updated.\n  " + task);
     }
 
     /**
@@ -114,8 +111,8 @@ public class Ui {
      */
     public void showTasks(TaskList tasks) {
         showSelected(tasks, task -> true,
-                "Here are the tasks in your list:",
-                "There is nothing in your list yet.");
+                "Your list:",
+                "Nothing on your list.");
     }
 
     /**
@@ -129,8 +126,8 @@ public class Ui {
      */
     public void showTasksOn(LocalDate date, TaskList tasks) {
         showSelected(tasks, task -> task.occursOn(date),
-                "Here are the tasks on " + DateTimes.format(date) + ":",
-                "There is nothing on " + DateTimes.format(date) + ".");
+                "On " + DateTimes.format(date) + ":",
+                "Nothing on " + DateTimes.format(date) + ".");
     }
 
     /**
@@ -144,8 +141,8 @@ public class Ui {
      */
     public void showMatchingTasks(String keyword, TaskList tasks) {
         showSelected(tasks, task -> task.hasKeyword(keyword),
-                "Here are the matching tasks in your list:",
-                "No task in your list has \"" + keyword + "\" in its description.");
+                "Matches:",
+                "No match for \"" + keyword + "\".");
     }
 
     /**
