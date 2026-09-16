@@ -1601,3 +1601,233 @@ No task 9.
 Pick between 1 and 1.
 ____________________________________________________________
 ```
+
+### TC-42 Dates the calendar does not have are refused
+
+**Aim:** A day a month does not have used to be moved quietly to the nearest real one, so
+`2019-02-30` became a task due on the 28th without a word. Each of these must be refused, and
+the leap day must still be accepted in a year that has one.
+
+**Input**
+
+```text
+deadline pay rent /by 2019-02-30
+deadline pay rent /by 2019-04-31
+deadline pay rent /by 2019-02-29
+deadline pay rent /by 2020-02-29
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Not a date: "2019-02-30"
+Use 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
+____________________________________________________________
+____________________________________________________________
+Not a date: "2019-04-31"
+Use 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
+____________________________________________________________
+____________________________________________________________
+Not a date: "2019-02-29"
+Use 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
+____________________________________________________________
+____________________________________________________________
+Added.
+  [D][ ] pay rent (by: Feb 29 2020)
+1 task.
+____________________________________________________________
+____________________________________________________________
+Your list:
+1.[D][ ] pay rent (by: Feb 29 2020)
+____________________________________________________________
+```
+
+### TC-43 A description cannot hold the character the save file reserves
+
+**Aim:** The save file separates fields with a pipe, so a description holding one used to be
+accepted, saved, and then dropped as unreadable on the next start. The task must be refused
+while the user is still there to fix it, and nothing may reach the save file.
+
+**Input**
+
+```text
+todo a | b
+deadline pay | rent /by 2019-12-02
+todo read book
+update 1 /desc a | b
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+A description cannot contain "|".
+EV uses it to separate fields when it saves your tasks.
+____________________________________________________________
+____________________________________________________________
+A description cannot contain "|".
+EV uses it to separate fields when it saves your tasks.
+____________________________________________________________
+____________________________________________________________
+Added.
+  [T][ ] read book
+1 task.
+____________________________________________________________
+____________________________________________________________
+A description cannot contain "|".
+EV uses it to separate fields when it saves your tasks.
+____________________________________________________________
+____________________________________________________________
+Your list:
+1.[T][ ] read book
+____________________________________________________________
+```
+
+**Data file after**
+
+```text
+T | 0 | read book
+```
+
+### TC-44 An option may only be given once
+
+**Aim:** A second `/by` used to be swallowed into the date, so the user was told their date was
+unreadable rather than that they had written the option twice.
+
+**Input**
+
+```text
+deadline return book /by 2019-12-01 /by 2019-12-02
+event camp /from 2019-12-01 /from 2019-12-02 /to 2019-12-03
+event camp /from 2019-12-01 /to 2019-12-02 /to 2019-12-03
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+/by may only appear once.
+e.g. deadline return book /by 2019-12-02 1800
+____________________________________________________________
+____________________________________________________________
+/from may only appear once.
+e.g. event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600
+____________________________________________________________
+____________________________________________________________
+/to may only appear once.
+e.g. event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600
+____________________________________________________________
+```
+
+### TC-45 An event cannot end before it starts
+
+**Aim:** The two ends of an event must stay in order however the event is made: when it is
+first added, and when either end is changed afterwards. A refused change leaves the event as
+it was, and an event that starts and ends at the same moment is still allowed.
+
+**Input**
+
+```text
+event camp /from 2019-12-05 /to 2019-12-01
+event camp /from 2019-12-01 0900 /to 2019-12-03 1700
+update 1 /to 2019-11-01 1700
+update 1 /from 2019-12-31 0900
+event standup /from 2019-12-02 0900 /to 2019-12-02 0900
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+An event cannot end before it starts.
+It would run from Dec 5 2019 to Dec 1 2019.
+____________________________________________________________
+____________________________________________________________
+Added.
+  [E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 3 2019, 5:00 PM)
+1 task.
+____________________________________________________________
+____________________________________________________________
+An event cannot end before it starts.
+It would run from Dec 1 2019, 9:00 AM to Nov 1 2019, 5:00 PM.
+____________________________________________________________
+____________________________________________________________
+An event cannot end before it starts.
+It would run from Dec 31 2019, 9:00 AM to Dec 3 2019, 5:00 PM.
+____________________________________________________________
+____________________________________________________________
+Added.
+  [E][ ] standup (from: Dec 2 2019, 9:00 AM to: Dec 2 2019, 9:00 AM)
+2 tasks.
+____________________________________________________________
+____________________________________________________________
+Your list:
+1.[E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 3 2019, 5:00 PM)
+2.[E][ ] standup (from: Dec 2 2019, 9:00 AM to: Dec 2 2019, 9:00 AM)
+____________________________________________________________
+```
+
+### TC-46 The same task cannot be added twice
+
+**Aim:** Adding a task that is already on the list is refused, and the reply says which task it
+already is. Finishing a task does not make it a different task. A task that differs in type or
+in date is not a duplicate.
+
+**Input**
+
+```text
+todo read book
+todo read book
+mark 1
+todo read book
+deadline read book /by 2019-12-02
+todo read the book
+list
+bye
+```
+
+**Expected output**
+
+```text
+____________________________________________________________
+Added.
+  [T][ ] read book
+1 task.
+____________________________________________________________
+____________________________________________________________
+Already on your list as task 1.
+  [T][ ] read book
+____________________________________________________________
+____________________________________________________________
+Done.
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+Already on your list as task 1.
+  [T][X] read book
+____________________________________________________________
+____________________________________________________________
+Added.
+  [D][ ] read book (by: Dec 2 2019)
+2 tasks.
+____________________________________________________________
+____________________________________________________________
+Added.
+  [T][ ] read the book
+3 tasks.
+____________________________________________________________
+____________________________________________________________
+Your list:
+1.[T][X] read book
+2.[D][ ] read book (by: Dec 2 2019)
+3.[T][ ] read the book
+____________________________________________________________
+```

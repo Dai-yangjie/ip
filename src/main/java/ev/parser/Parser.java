@@ -86,6 +86,7 @@ public class Parser {
             throw new EvException("A todo needs a description.",
                     "e.g. todo borrow book");
         }
+        Task.requireSavableDescription(argument);
         return new Todo(argument);
     }
 
@@ -97,6 +98,8 @@ public class Parser {
      * @throws EvException if {@code /by} is missing, either part is empty, or the date cannot be read.
      */
     public static Deadline parseDeadline(String argument) throws EvException {
+        requireSingleOccurrence(argument, Deadline.OPTION_BY, DEADLINE_USAGE);
+
         int byIndex = argument.indexOf(Deadline.OPTION_BY);
         if (byIndex < 0) {
             throw new EvException("A deadline needs " + Deadline.OPTION_BY + ".",
@@ -112,6 +115,7 @@ public class Parser {
             throw new EvException("Missing date after " + Deadline.OPTION_BY + ".",
                     DEADLINE_USAGE);
         }
+        Task.requireSavableDescription(description);
         return new Deadline(description, DateTimes.parse(by));
     }
 
@@ -124,6 +128,9 @@ public class Parser {
      *     or a date cannot be read.
      */
     public static Event parseEvent(String argument) throws EvException {
+        requireSingleOccurrence(argument, Event.OPTION_FROM, EVENT_USAGE);
+        requireSingleOccurrence(argument, Event.OPTION_TO, EVENT_USAGE);
+
         int fromIndex = argument.indexOf(Event.OPTION_FROM);
         int toIndex = argument.indexOf(Event.OPTION_TO);
         if (fromIndex < 0) {
@@ -149,7 +156,26 @@ public class Parser {
             throw new EvException("Missing date after " + Event.OPTION_FROM + " or " + Event.OPTION_TO + ".",
                     EVENT_USAGE);
         }
+        Task.requireSavableDescription(description);
         return new Event(description, DateTimes.parse(from), DateTimes.parse(to));
+    }
+
+    /**
+     * Checks that an option was given only once.
+     *
+     * <p>Without this, a second {@code /by} would be read as part of the date, and the user
+     * would be told their date is unreadable rather than that they wrote the option twice.
+     *
+     * @param argument everything after the keyword.
+     * @param option the option to count.
+     * @param usage the example to show alongside the complaint.
+     * @throws EvException if the option appears more than once.
+     */
+    private static void requireSingleOccurrence(String argument, String option, String usage)
+            throws EvException {
+        if (argument.indexOf(option) != argument.lastIndexOf(option)) {
+            throw new EvException(option + " may only appear once.", usage);
+        }
     }
 
     /**

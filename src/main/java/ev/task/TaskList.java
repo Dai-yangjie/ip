@@ -73,11 +73,18 @@ public class TaskList {
     }
 
     /**
-     * Adds a task to the end of the list.
+     * Adds a task to the end of the list, unless the list already holds that task.
      *
      * @param task the task to add.
+     * @throws EvException if a task about the same thing is already on the list.
      */
-    public void add(Task task) {
+    public void add(Task task) throws EvException {
+        for (int i = 0; i < tasks.size(); i++) {
+            if (tasks.get(i).hasSameDetails(task)) {
+                throw new EvException("Already on your list as task " + (i + 1) + ".",
+                        "  " + tasks.get(i));
+            }
+        }
         tasks.add(task);
     }
 

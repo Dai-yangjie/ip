@@ -14,19 +14,19 @@ import ev.EvException;
 public class TodoTest {
 
     @Test
-    public void toString_newTodo_emptyStatusBox() {
+    public void toString_newTodo_emptyStatusBox() throws EvException {
         assertEquals("[T][ ] read book", new Todo("read book").toString());
     }
 
     @Test
-    public void toString_doneTodo_tickedStatusBox() {
+    public void toString_doneTodo_tickedStatusBox() throws EvException {
         Todo todo = new Todo("read book");
         todo.markAsDone();
         assertEquals("[T][X] read book", todo.toString());
     }
 
     @Test
-    public void toString_unmarkedAgain_backToEmptyStatusBox() {
+    public void toString_unmarkedAgain_backToEmptyStatusBox() throws EvException {
         Todo todo = new Todo("read book");
         todo.markAsDone();
         todo.markAsNotDone();
@@ -34,40 +34,40 @@ public class TodoTest {
     }
 
     @Test
-    public void toFileFormat_newTodo_notDoneFlag() {
+    public void toFileFormat_newTodo_notDoneFlag() throws EvException {
         assertEquals("T | 0 | read book", new Todo("read book").toFileFormat());
     }
 
     @Test
-    public void toFileFormat_doneTodo_doneFlag() {
+    public void toFileFormat_doneTodo_doneFlag() throws EvException {
         Todo todo = new Todo("read book");
         todo.markAsDone();
         assertEquals("T | 1 | read book", todo.toFileFormat());
     }
 
     @Test
-    public void occursOn_anyDate_false() {
+    public void occursOn_anyDate_false() throws EvException {
         assertFalse(new Todo("read book").occursOn(LocalDate.of(2019, 12, 2)));
     }
 
     @Test
-    public void hasKeyword_wordInDescription_true() {
+    public void hasKeyword_wordInDescription_true() throws EvException {
         assertTrue(new Todo("read book").hasKeyword("book"));
     }
 
     @Test
-    public void hasKeyword_partOfWord_true() {
+    public void hasKeyword_partOfWord_true() throws EvException {
         assertTrue(new Todo("read book").hasKeyword("oo"));
     }
 
     @Test
-    public void hasKeyword_differentCase_true() {
+    public void hasKeyword_differentCase_true() throws EvException {
         assertTrue(new Todo("Read Book").hasKeyword("book"));
         assertTrue(new Todo("read book").hasKeyword("BOOK"));
     }
 
     @Test
-    public void hasKeyword_wordNotInDescription_false() {
+    public void hasKeyword_wordNotInDescription_false() throws EvException {
         assertFalse(new Todo("read book").hasKeyword("plants"));
     }
 
@@ -80,7 +80,7 @@ public class TodoTest {
     }
 
     @Test
-    public void applyUpdate_optionThisTypeLacks_rejectedAndUnchanged() {
+    public void applyUpdate_optionThisTypeLacks_rejectedAndUnchanged() throws EvException {
         Todo todo = new Todo("read book");
         EvException thrown = assertThrows(EvException.class, () ->
                 todo.applyUpdate("/by", "2019-12-05"));

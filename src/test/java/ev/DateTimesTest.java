@@ -105,4 +105,21 @@ public class DateTimesTest {
         assertThrows(EvException.class, () -> DateTimes.fromFileFormat("Dec 2 2019, 6:00 PM"));
         assertThrows(EvException.class, () -> DateTimes.fromFileFormat("June 6th"));
     }
+
+    @Test
+    public void parse_dayThatMonthDoesNotHave_exceptionThrown() {
+        assertThrows(EvException.class, () -> DateTimes.parse("2019-02-30"));
+        assertThrows(EvException.class, () -> DateTimes.parse("2019-04-31"));
+        assertThrows(EvException.class, () -> DateTimes.parse("31/4/2019"));
+    }
+
+    @Test
+    public void parse_feb29InACommonYear_exceptionThrown() {
+        assertThrows(EvException.class, () -> DateTimes.parse("2019-02-29"));
+    }
+
+    @Test
+    public void parse_feb29InALeapYear_accepted() throws EvException {
+        assertEquals(LocalDateTime.of(2020, 2, 29, 0, 0), DateTimes.parse("2020-02-29"));
+    }
 }

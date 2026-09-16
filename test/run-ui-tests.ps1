@@ -224,7 +224,10 @@ foreach ($case in $cases) {
         $expectedData = @($case.DataAfter)
         $expectsNoFile = ($expectedData.Count -eq 1 -and $expectedData[0] -eq '(no file)')
         $fileExists = Test-Path $dataFile
-        $actualData = if ($fileExists) { @(Get-Content -Path $dataFile) } else { @() }
+        # The @() has to wrap the whole if: PowerShell unrolls a one-element array on its
+        # way out of a statement block, and indexing the bare string that is left gives
+        # back single characters instead of lines.
+        $actualData = @(if ($fileExists) { Get-Content -Path $dataFile } else { @() })
 
         $dataProblem = ''
         if ($expectsNoFile) {
