@@ -1,15 +1,34 @@
+/*
+ * The two speakers are styled differently on purpose: the conversation is between a
+ * person and an app, not between two people.
+ */
+
+/* What the user typed: a compact bubble on the right that hugs its own text. */
 .label {
-    -fx-background-color: #d7e8f5;
-    -fx-background-radius: 1em 1em 0 1em;
-    -fx-font: 14px "Segoe UI";
-    -fx-text-fill: #16232e;
+    -fx-background-color: #3f7cac;
+    -fx-background-radius: 12 12 2 12;
+    -fx-font: 13px "Segoe UI";
+    -fx-text-fill: white;
 }
 
+/*
+ * EV's reply: flat text across the full width. Replies are often numbered lists, which a
+ * bubble would squeeze into a narrow column, and a monospaced font keeps the [T][X] status
+ * boxes lined up down the page.
+ */
 .reply-label {
-    -fx-background-color: white;
-    -fx-background-radius: 1em 1em 1em 0;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-font-family: "Consolas", "Menlo", "DejaVu Sans Mono", monospace;
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #1d2b36;
 }
 
-#displayPicture {
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.18), 8, 0.4, 3, 3);
+/* A refusal, marked so it is not read as a result. */
+.error-label {
+    -fx-background-color: #fdecea;
+    -fx-background-radius: 0 6 6 0;
+    -fx-border-color: #d64545;
+    -fx-border-width: 0 0 0 3;
+    -fx-text-fill: #8a2a2a;
 }

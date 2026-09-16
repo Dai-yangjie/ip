@@ -1,18 +1,31 @@
+/*
+ * The window is likely to be narrow and the replies long, so the layout gives as much
+ * room as it can to the conversation: white behind the text, a thin divider above the
+ * input row, and a scroll bar with no end buttons.
+ */
+
 .root {
-    -fx-background-color: #f2f4f7;
+    -fx-background-color: white;
 }
 
 .text-field {
     -fx-background-color: white;
-    -fx-border-color: #c8ccd4;
-    -fx-border-width: 1px;
+    -fx-background-radius: 0;
+    -fx-border-color: #dde1e7;
+    -fx-border-width: 1 0 0 0;
     -fx-font: 14px "Segoe UI";
+    -fx-prompt-text-fill: #9aa4b0;
+}
+
+.text-field:focused {
+    -fx-background-color: #f7f9fb;
 }
 
 .button {
     -fx-background-color: #3f7cac;
+    -fx-background-radius: 0;
     -fx-text-fill: white;
-    -fx-font: bold 14px "Segoe UI";
+    -fx-font: bold 13px "Segoe UI";
 }
 
 .button:hover {
@@ -24,7 +37,7 @@
 }
 
 .button:disabled {
-    -fx-background-color: #a8b3bf;
+    -fx-background-color: #c3cad2;
 }
 
 .scroll-pane,
@@ -37,10 +50,11 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: #c8ccd4;
+    -fx-background-color: #d3d8df;
     -fx-background-radius: 1em;
 }
 
+/* The end buttons cost height and do nothing a drag or a wheel cannot do. */
 .scroll-bar .increment-button,
 .scroll-bar .decrement-button {
     -fx-pref-height: 0;

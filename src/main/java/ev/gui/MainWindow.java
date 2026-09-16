@@ -65,10 +65,10 @@ public class MainWindow extends AnchorPane {
         }
 
         String response = ev.getResponse(input);
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getEvDialog(response, evImage)
-        );
+        DialogBox reply = ev.isErrorResponse()
+                ? DialogBox.getErrorDialog(response, evImage)
+                : DialogBox.getEvDialog(response, evImage);
+        dialogContainer.getChildren().addAll(DialogBox.getUserDialog(input, userImage), reply);
         userInput.clear();
 
         if (ev.isExit()) {
