@@ -30,7 +30,7 @@ public class ExitCommandTest {
         TaskList tasks = new TaskList();
         tasks.add(new Todo("read book"));
         Ui ui = new Ui();
-        Path file = workFolder.resolve("duke.txt");
+        Path file = workFolder.resolve("ev.txt");
 
         new ExitCommand().execute(tasks, ui, new Storage(file));
 

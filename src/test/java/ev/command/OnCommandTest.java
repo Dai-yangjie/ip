@@ -36,7 +36,7 @@ public class OnCommandTest {
     public void execute_dateWithADeadlineAndAnEvent_todoLeftOut() throws EvException {
         Ui ui = new Ui();
         new OnCommand(LocalDate.of(2019, 12, 2))
-                .execute(threeTasks(), ui, new Storage(workFolder.resolve("duke.txt")));
+                .execute(threeTasks(), ui, new Storage(workFolder.resolve("ev.txt")));
         assertEquals("On Dec 2 2019:"
                 + "\n2.[D][ ] return book (by: Dec 2 2019, 6:00 PM)"
                 + "\n3.[E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 3 2019, 5:00 PM)",
@@ -47,7 +47,7 @@ public class OnCommandTest {
     public void execute_dayTheEventEnds_stillCounted() throws EvException {
         Ui ui = new Ui();
         new OnCommand(LocalDate.of(2019, 12, 3))
-                .execute(threeTasks(), ui, new Storage(workFolder.resolve("duke.txt")));
+                .execute(threeTasks(), ui, new Storage(workFolder.resolve("ev.txt")));
         assertEquals("On Dec 3 2019:"
                 + "\n3.[E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 3 2019, 5:00 PM)",
                 ui.takeResponse());
@@ -57,7 +57,7 @@ public class OnCommandTest {
     public void execute_dateWithNothingOnIt_saysSo() throws EvException {
         Ui ui = new Ui();
         new OnCommand(LocalDate.of(2020, 1, 1))
-                .execute(threeTasks(), ui, new Storage(workFolder.resolve("duke.txt")));
+                .execute(threeTasks(), ui, new Storage(workFolder.resolve("ev.txt")));
         assertEquals("Nothing on Jan 1 2020.", ui.takeResponse());
     }
 }

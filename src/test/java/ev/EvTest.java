@@ -18,7 +18,7 @@ public class EvTest {
     Path workFolder;
 
     private Path dataFile() {
-        return workFolder.resolve("data").resolve("duke.txt");
+        return workFolder.resolve("data").resolve("ev.txt");
     }
 
     private EV started() {

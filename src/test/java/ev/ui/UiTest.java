@@ -103,7 +103,7 @@ public class UiTest {
     @Test
     public void showSkippedLines_namesTheCountAndTheFile() {
         Ui ui = new Ui();
-        ui.showSkippedLines(3, Paths.get("data", "duke.txt"));
+        ui.showSkippedLines(3, Paths.get("data", "ev.txt"));
         assertTrue(ui.takeResponse().startsWith("Skipped 3 unreadable line(s) in "));
     }
 

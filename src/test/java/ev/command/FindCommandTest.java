@@ -29,21 +29,21 @@ public class FindCommandTest {
     @Test
     public void execute_matchingKeyword_matchesKeepTheirNumbers() throws EvException {
         Ui ui = new Ui();
-        new FindCommand("book").execute(threeTasks(), ui, new Storage(workFolder.resolve("duke.txt")));
+        new FindCommand("book").execute(threeTasks(), ui, new Storage(workFolder.resolve("ev.txt")));
         assertEquals("Matches:\n1.[T][ ] read book\n3.[T][ ] return book", ui.takeResponse());
     }
 
     @Test
     public void execute_differentCase_stillMatches() throws EvException {
         Ui ui = new Ui();
-        new FindCommand("BOOK").execute(threeTasks(), ui, new Storage(workFolder.resolve("duke.txt")));
+        new FindCommand("BOOK").execute(threeTasks(), ui, new Storage(workFolder.resolve("ev.txt")));
         assertEquals("Matches:\n1.[T][ ] read book\n3.[T][ ] return book", ui.takeResponse());
     }
 
     @Test
     public void execute_noMatch_saysSo() throws EvException {
         Ui ui = new Ui();
-        new FindCommand("homework").execute(threeTasks(), ui, new Storage(workFolder.resolve("duke.txt")));
+        new FindCommand("homework").execute(threeTasks(), ui, new Storage(workFolder.resolve("ev.txt")));
         assertEquals("No match for \"homework\".", ui.takeResponse());
     }
 }
