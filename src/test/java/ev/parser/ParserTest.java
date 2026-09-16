@@ -208,7 +208,7 @@ public class ParserTest {
     public void parseUpdate_twoOptions_exceptionThrown() {
         EvException thrown = assertThrows(EvException.class, () ->
                 Parser.parseUpdate("2 /desc a /by 2019-12-05"));
-        assertTrue(thrown.getMessage().contains("one thing at a time"));
+        assertTrue(thrown.getMessage().contains("One field at a time"));
     }
 
     @Test

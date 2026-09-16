@@ -91,11 +91,11 @@ function Get-ReplyBody($outputLines, $caseId) {
     }
 
     $greetingEnd = $separatorIndexes[1]
-    if ($lines[$separatorIndexes[0] + 1] -ne "Hello! I'm EV." -or
-        $lines[$separatorIndexes[0] + 2] -ne 'What can I do for you?') {
+    if ($lines[$separatorIndexes[0] + 1] -ne "Hi Peter." -or
+        $lines[$separatorIndexes[0] + 2] -ne "EV online. What do you need?") {
         throw "$caseId : greeting does not match the one recorded in the test plan."
     }
-    if ($lines[$lines.Count - 2] -ne 'Bye. Hope to see you again soon!') {
+    if ($lines[$lines.Count - 2] -ne "Signing off, Peter.") {
         throw "$caseId : farewell does not match the one recorded in the test plan."
     }
 

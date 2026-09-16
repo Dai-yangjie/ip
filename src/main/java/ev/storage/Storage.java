@@ -62,16 +62,16 @@ public class Storage {
             return tasks;
         }
         if (Files.isDirectory(file)) {
-            throw new EvException(file + " is a folder, not a file, so I cannot read your saved tasks.",
-                    "I'm starting with an empty list.");
+            throw new EvException(file + " is a folder, not a file.",
+                    "Starting with an empty list.");
         }
 
         List<String> lines;
         try {
             lines = Files.readAllLines(file);
         } catch (IOException e) {
-            throw new EvException("I could not read " + file + " (" + e.getMessage() + ").",
-                    "I'm starting with an empty list.");
+            throw new EvException("Cannot read " + file + " (" + e.getMessage() + ").",
+                    "Starting with an empty list.");
         }
 
         for (String line : lines) {
@@ -105,10 +105,8 @@ public class Storage {
             Files.write(file, lines);
             assert Files.exists(file) : "Saving without an exception must leave the file on disk";
         } catch (IOException e) {
-            throw new EvException("I could not save your tasks to " + file
-                    + " (" + e.getMessage() + ").",
-                    "The list is still correct in this session,"
-                    + " but the change may be lost after you exit.");
+            throw new EvException("Cannot save to " + file + " (" + e.getMessage() + ").",
+                    "The list is right for now, but the change may be lost on exit.");
         }
     }
 

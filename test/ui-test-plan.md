@@ -31,12 +31,12 @@ Every session starts with the banner and greeting, and ends with the farewell:
 |_______|    \/
 
 ____________________________________________________________
-Hello! I'm EV.
-What can I do for you?
+Hi Peter.
+EV online. What do you need?
 ____________________________________________________________
 ...
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Signing off, Peter.
 ____________________________________________________________
 ```
 
@@ -85,9 +85,9 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] borrow book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ```
 
@@ -107,9 +107,9 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [D][ ] return book (by: Jun 6 2019)
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ```
 
@@ -129,9 +129,9 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [E][ ] project meeting (from: Aug 6 2019, 2:00 PM to: Aug 6 2019, 4:00 PM)
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ```
 
@@ -155,22 +155,22 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [D][ ] return book (by: Dec 2 2019, 6:00 PM)
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [D][ ] pay rent (by: Oct 15 2019)
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [E][ ] trip (from: Dec 1 2019 to: Dec 3 2019, 10:30 AM)
-Now you have 3 tasks in the list.
+3 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[D][ ] return book (by: Dec 2 2019, 6:00 PM)
 2.[D][ ] pay rent (by: Oct 15 2019)
 3.[E][ ] trip (from: Dec 1 2019 to: Dec 3 2019, 10:30 AM)
@@ -193,7 +193,7 @@ bye
 
 ```text
 ____________________________________________________________
-There is nothing in your list yet.
+Nothing on your list.
 ____________________________________________________________
 ```
 
@@ -216,22 +216,22 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [D][ ] return book (by: Jun 6 2019)
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [E][ ] project meeting (from: Aug 6 2019, 2:00 PM to: Aug 6 2019, 4:00 PM)
-Now you have 3 tasks in the list.
+3 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] read book
 2.[D][ ] return book (by: Jun 6 2019)
 3.[E][ ] project meeting (from: Aug 6 2019, 2:00 PM to: Aug 6 2019, 4:00 PM)
@@ -257,21 +257,21 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] return book
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Done.
   [T][X] return book
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] read book
 2.[T][X] return book
 ____________________________________________________________
@@ -295,20 +295,20 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Done.
   [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-OK, I've marked this task as not done yet:
+Back to not done.
   [T][ ] read book
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] read book
 ____________________________________________________________
 ```
@@ -331,20 +331,20 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Done.
   [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Done.
   [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][X] read book
 ____________________________________________________________
 ```
@@ -365,8 +365,8 @@ bye
 
 ```text
 ____________________________________________________________
-I don't know what "blah" means.
-I understand: todo, deadline, event, list, on, find, mark, unmark, delete, update, bye.
+No such command: "blah"
+I take: todo, deadline, event, list, on, find, mark, unmark, delete, update, bye.
 ____________________________________________________________
 ```
 
@@ -386,7 +386,7 @@ bye
 ```text
 ____________________________________________________________
 A todo needs a description.
-Try something like: todo borrow book
+e.g. todo borrow book
 ____________________________________________________________
 ```
 
@@ -408,16 +408,16 @@ bye
 
 ```text
 ____________________________________________________________
-A deadline needs a /by to say when it is due.
-Try something like: deadline return book /by 2019-12-02 1800
+A deadline needs /by.
+e.g. deadline return book /by 2019-12-02 1800
 ____________________________________________________________
 ____________________________________________________________
-A deadline needs a description before /by.
-Try something like: deadline return book /by 2019-12-02 1800
+Missing description before /by.
+e.g. deadline return book /by 2019-12-02 1800
 ____________________________________________________________
 ____________________________________________________________
-A deadline needs a due time after /by.
-Try something like: deadline return book /by 2019-12-02 1800
+Missing date after /by.
+e.g. deadline return book /by 2019-12-02 1800
 ____________________________________________________________
 ```
 
@@ -440,20 +440,20 @@ bye
 
 ```text
 ____________________________________________________________
-An event needs a /from to say when it starts.
-Try something like: event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600
+An event needs /from.
+e.g. event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600
 ____________________________________________________________
 ____________________________________________________________
-An event needs a /to to say when it ends.
-Try something like: event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600
+An event needs /to.
+e.g. event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600
 ____________________________________________________________
 ____________________________________________________________
-Please put /from before /to.
-Try something like: event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600
+/from must come before /to.
+e.g. event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600
 ____________________________________________________________
 ____________________________________________________________
-An event needs a description before /from.
-Try something like: event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600
+Missing description before /from.
+e.g. event project meeting /from 2019-12-02 1400 /to 2019-12-02 1600
 ____________________________________________________________
 ```
 
@@ -478,24 +478,24 @@ bye
 
 ```text
 ____________________________________________________________
-Your list is empty, so there is no task to update yet.
+Your list is empty.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Please tell me which task number.
-Try something like: mark 2
+Which task?
+e.g. mark 2
 ____________________________________________________________
 ____________________________________________________________
-"abc" is not a task number.
-Try something like: mark 2
+"abc" is not a number.
+e.g. mark 2
 ____________________________________________________________
 ____________________________________________________________
-There is no task 5 in your list.
-You currently have 1 task, so please pick a number between 1 and 1.
+No task 5.
+Pick between 1 and 1.
 ____________________________________________________________
 ```
 
@@ -518,20 +518,20 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-"abc" is not a task number.
-Try something like: mark 2
+"abc" is not a number.
+e.g. mark 2
 ____________________________________________________________
 ____________________________________________________________
-There is no task 0 in your list.
-You currently have 1 task, so please pick a number between 1 and 1.
+No task 0.
+Pick between 1 and 1.
 ____________________________________________________________
 ____________________________________________________________
-OK, I've marked this task as not done yet:
+Back to not done.
   [T][ ] read book
 ____________________________________________________________
 ```
@@ -559,33 +559,33 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-I don't know what "blah" means.
-I understand: todo, deadline, event, list, on, find, mark, unmark, delete, update, bye.
+No such command: "blah"
+I take: todo, deadline, event, list, on, find, mark, unmark, delete, update, bye.
 ____________________________________________________________
 ____________________________________________________________
-A deadline needs a /by to say when it is due.
-Try something like: deadline return book /by 2019-12-02 1800
+A deadline needs /by.
+e.g. deadline return book /by 2019-12-02 1800
 ____________________________________________________________
 ____________________________________________________________
-There is no task 9 in your list.
-You currently have 1 task, so please pick a number between 1 and 1.
+No task 9.
+Pick between 1 and 1.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [D][ ] return book (by: Jun 6 2019)
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
 A todo needs a description.
-Try something like: todo borrow book
+e.g. todo borrow book
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] read book
 2.[D][ ] return book (by: Jun 6 2019)
 ____________________________________________________________
@@ -610,12 +610,12 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] read book
 ____________________________________________________________
 ```
@@ -638,17 +638,17 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] list
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] unmark the thing
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] list
 2.[T][ ] unmark the thing
 ____________________________________________________________
@@ -671,12 +671,12 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] borrow book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] borrow book
 ____________________________________________________________
 ```
@@ -702,32 +702,32 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [D][ ] return book (by: Jun 6 2019)
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [E][ ] project meeting (from: Aug 6 2019, 2:00 PM to: Aug 6 2019, 4:00 PM)
-Now you have 3 tasks in the list.
+3 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] join sports club
-Now you have 4 tasks in the list.
+4 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Noted. I've removed this task:
+Removed.
   [E][ ] project meeting (from: Aug 6 2019, 2:00 PM to: Aug 6 2019, 4:00 PM)
-Now you have 3 tasks in the list.
+3 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] read book
 2.[D][ ] return book (by: Jun 6 2019)
 3.[T][ ] join sports club
@@ -754,24 +754,24 @@ bye
 
 ```text
 ____________________________________________________________
-Your list is empty, so there is no task to update yet.
+Your list is empty.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Please tell me which task number.
-Try something like: mark 2
+Which task?
+e.g. mark 2
 ____________________________________________________________
 ____________________________________________________________
-"abc" is not a task number.
-Try something like: mark 2
+"abc" is not a number.
+e.g. mark 2
 ____________________________________________________________
 ____________________________________________________________
-There is no task 2 in your list.
-You currently have 1 task, so please pick a number between 1 and 1.
+No task 2.
+Pick between 1 and 1.
 ____________________________________________________________
 ```
 
@@ -802,50 +802,50 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] a
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] b
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] c
-Now you have 3 tasks in the list.
+3 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Done.
   [T][X] c
 ____________________________________________________________
 ____________________________________________________________
-Noted. I've removed this task:
+Removed.
   [T][ ] a
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] b
 2.[T][X] c
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Done.
   [T][X] c
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] b
 2.[T][X] c
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] d
-Now you have 3 tasks in the list.
+3 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] b
 2.[T][X] c
 3.[T][ ] d
@@ -870,17 +870,17 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] only task
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Noted. I've removed this task:
+Removed.
   [T][ ] only task
-Now you have 0 tasks in the list.
+0 tasks.
 ____________________________________________________________
 ____________________________________________________________
-There is nothing in your list yet.
+Nothing on your list.
 ____________________________________________________________
 ```
 
@@ -910,22 +910,22 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [D][ ] return book (by: Jun 6 2019)
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [E][ ] project meeting (from: Aug 6 2019, 2:00 PM to: Aug 6 2019, 4:00 PM)
-Now you have 3 tasks in the list.
+3 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Done.
   [T][X] read book
 ____________________________________________________________
 ```
@@ -963,7 +963,7 @@ bye
 
 ```text
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][X] read book
 2.[D][ ] return book (by: Jun 6 2019)
 3.[E][ ] project meeting (from: Aug 6 2019, 2:00 PM to: Aug 6 2019, 4:00 PM)
@@ -1003,12 +1003,12 @@ bye
 
 ```text
 ____________________________________________________________
-Noted. I've removed this task:
+Removed.
   [D][ ] return book (by: Jun 6 2019)
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-OK, I've marked this task as not done yet:
+Back to not done.
   [T][ ] read book
 ____________________________________________________________
 ```
@@ -1036,7 +1036,7 @@ bye
 
 ```text
 ____________________________________________________________
-There is nothing in your list yet.
+Nothing on your list.
 ____________________________________________________________
 ```
 
@@ -1074,13 +1074,13 @@ bye
 
 ```text
 ____________________________________________________________
-I skipped 4 line(s) in data\duke.txt because they were not in the format I expect.
-The rest of your tasks were loaded, and the file will be tidied up on the next change.
+Skipped 4 unreadable line(s) in data\duke.txt.
+The rest loaded. Next change rewrites the file.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] water plants
-Now you have 3 tasks in the list.
+3 tasks.
 ____________________________________________________________
 ```
 
@@ -1112,19 +1112,19 @@ bye
 
 ```text
 ____________________________________________________________
-I don't understand the date "no idea :-p".
-Please use one of: 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
+Not a date: "no idea :-p"
+Use 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
 ____________________________________________________________
 ____________________________________________________________
-I don't understand the date "2019-13-45".
-Please use one of: 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
+Not a date: "2019-13-45"
+Use 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
 ____________________________________________________________
 ____________________________________________________________
-I don't understand the date "next week".
-Please use one of: 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
+Not a date: "next week"
+Use 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
 ____________________________________________________________
 ____________________________________________________________
-There is nothing in your list yet.
+Nothing on your list.
 ____________________________________________________________
 ```
 
@@ -1155,27 +1155,27 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [D][ ] return book (by: Dec 2 2019, 6:00 PM)
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [E][ ] project meeting (from: Dec 1 2019, 2:00 PM to: Dec 3 2019, 4:00 PM)
-Now you have 3 tasks in the list.
+3 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks on Dec 2 2019:
+On Dec 2 2019:
 1.[D][ ] return book (by: Dec 2 2019, 6:00 PM)
 3.[E][ ] project meeting (from: Dec 1 2019, 2:00 PM to: Dec 3 2019, 4:00 PM)
 ____________________________________________________________
 ____________________________________________________________
-There is nothing on Jan 1 2020.
+Nothing on Jan 1 2020.
 ____________________________________________________________
 ```
 
@@ -1201,27 +1201,27 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 3 2019, 5:00 PM)
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-There is nothing on Nov 30 2019.
+Nothing on Nov 30 2019.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks on Dec 1 2019:
+On Dec 1 2019:
 1.[E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 3 2019, 5:00 PM)
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks on Dec 2 2019:
+On Dec 2 2019:
 1.[E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 3 2019, 5:00 PM)
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks on Dec 3 2019:
+On Dec 3 2019:
 1.[E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 3 2019, 5:00 PM)
 ____________________________________________________________
 ____________________________________________________________
-There is nothing on Dec 4 2019.
+Nothing on Dec 4 2019.
 ____________________________________________________________
 ```
 
@@ -1242,12 +1242,12 @@ bye
 
 ```text
 ____________________________________________________________
-Please tell me which date you are asking about.
-Try something like: on 2019-12-02
+Which date?
+e.g. on 2019-12-02
 ____________________________________________________________
 ____________________________________________________________
-I don't understand the date "someday".
-Please use one of: 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
+Not a date: "someday"
+Use 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
 ____________________________________________________________
 ```
 
@@ -1273,31 +1273,31 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [D][ ] return book (by: Jun 6 2019)
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] water plants
-Now you have 3 tasks in the list.
+3 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Done.
   [D][X] return book (by: Jun 6 2019)
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+Matches:
 1.[T][ ] read book
 2.[D][X] return book (by: Jun 6 2019)
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] read book
 2.[D][X] return book (by: Jun 6 2019)
 3.[T][ ] water plants
@@ -1325,25 +1325,25 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] Read Book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [E][ ] December trip (from: Dec 1 2019 to: Dec 3 2019)
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+Matches:
 1.[T][ ] Read Book
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+Matches:
 2.[E][ ] December trip (from: Dec 1 2019 to: Dec 3 2019)
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+Matches:
 2.[E][ ] December trip (from: Dec 1 2019 to: Dec 3 2019)
 ____________________________________________________________
 ```
@@ -1366,16 +1366,16 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-No task in your list has "plants" in its description.
+No match for "plants".
 ____________________________________________________________
 ____________________________________________________________
-Please tell me what to search for.
-Try something like: find book
+Search for what?
+e.g. find book
 ____________________________________________________________
 ```
 
@@ -1400,29 +1400,29 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [D][ ] return book (by: Jun 6 2019)
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Done.
   [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've updated this task:
+Updated.
   [D][ ] return book (by: Dec 5 2019, 6:00 PM)
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've updated this task:
+Updated.
   [T][X] read the whole book
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][X] read the whole book
 2.[D][ ] return book (by: Dec 5 2019, 6:00 PM)
 ____________________________________________________________
@@ -1446,16 +1446,16 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 3 2019, 5:00 PM)
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've updated this task:
+Updated.
   [E][ ] camp (from: Dec 1 2019, 9:00 AM to: Dec 4 2019, 5:00 PM)
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've updated this task:
+Updated.
   [E][ ] camp (from: Nov 30 2019, 8:00 AM to: Dec 4 2019, 5:00 PM)
 ____________________________________________________________
 ```
@@ -1484,37 +1484,37 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [D][ ] pay rent (by: Jun 6 2019)
-Now you have 2 tasks in the list.
+2 tasks.
 ____________________________________________________________
 ____________________________________________________________
-You cannot change /by on a todo.
-On a todo you can update: /desc
+No /by on a todo.
+It takes: /desc
 ____________________________________________________________
 ____________________________________________________________
-You cannot change /from on a deadline.
-On a deadline you can update: /desc, /by
+No /from on a deadline.
+It takes: /desc, /by
 ____________________________________________________________
 ____________________________________________________________
-An update needs a new value after /by.
-Try something like: update 2 /by 2019-12-05 1800
+Missing value after /by.
+e.g. update 2 /by 2019-12-05 1800
 ____________________________________________________________
 ____________________________________________________________
-Please change one thing at a time.
-Try something like: update 2 /by 2019-12-05 1800
+One field at a time.
+e.g. update 2 /by 2019-12-05 1800
 ____________________________________________________________
 ____________________________________________________________
-I don't understand the date "tomorrow".
-Please use one of: 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
+Not a date: "tomorrow"
+Use 2019-12-02, 2019-12-02 1800, 2/12/2019 or 2/12/2019 1800.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Your list:
 1.[T][ ] read book
 2.[D][ ] pay rent (by: Jun 6 2019)
 ____________________________________________________________
@@ -1544,12 +1544,12 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've updated this task:
+Updated.
   [D][ ] return book (by: Dec 5 2019, 6:00 PM)
 ____________________________________________________________
 ____________________________________________________________
-You cannot change /by on a todo.
-On a todo you can update: /desc
+No /by on a todo.
+It takes: /desc
 ____________________________________________________________
 ```
 
@@ -1580,24 +1580,24 @@ bye
 
 ```text
 ____________________________________________________________
-Got it. I've added this task:
+Added.
   [T][ ] read book
-Now you have 1 task in the list.
+1 task.
 ____________________________________________________________
 ____________________________________________________________
-Please tell me which task to update and what to change.
-Try something like: update 2 /by 2019-12-05 1800
+Update what?
+e.g. update 2 /by 2019-12-05 1800
 ____________________________________________________________
 ____________________________________________________________
-An update needs one of /desc, /by, /from or /to.
-Try something like: update 2 /by 2019-12-05 1800
+Name a field: /desc, /by, /from or /to.
+e.g. update 2 /by 2019-12-05 1800
 ____________________________________________________________
 ____________________________________________________________
-"two" is not a task number.
-Try something like: mark 2
+"two" is not a number.
+e.g. mark 2
 ____________________________________________________________
 ____________________________________________________________
-There is no task 9 in your list.
-You currently have 1 task, so please pick a number between 1 and 1.
+No task 9.
+Pick between 1 and 1.
 ____________________________________________________________
 ```
