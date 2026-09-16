@@ -6,6 +6,9 @@
 
 .root {
     -fx-background-color: white;
+    -fx-background-image: url("../images/wallpaper.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
 }
 
 .text-field {
@@ -22,25 +25,33 @@
 }
 
 .button {
-    -fx-background-color: #3f7cac;
+    -fx-background-color: #d32020;
     -fx-background-radius: 0;
     -fx-text-fill: white;
     -fx-font: bold 13px "Segoe UI";
 }
 
 .button:hover {
-    -fx-background-color: #4f92c6;
+    -fx-background-color: #e63b3b;
 }
 
 .button:pressed {
-    -fx-background-color: #2f5f85;
+    -fx-background-color: #a81616;
 }
 
 .button:disabled {
     -fx-background-color: #c3cad2;
 }
 
-.scroll-pane,
+/*
+ * A light veil over the wallpaper. EV's replies are plain text rather than bubbles, so
+ * without it they would sit straight on the picture and lose their contrast. The viewport
+ * stays transparent, or it would cover the veil with its own background.
+ */
+.scroll-pane {
+    -fx-background-color: rgba(255, 255, 255, 0.72);
+}
+
 .scroll-pane .viewport {
     -fx-background-color: transparent;
 }
