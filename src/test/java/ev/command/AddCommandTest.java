@@ -21,7 +21,7 @@ public class AddCommandTest {
     Path workFolder;
 
     private Storage storage() {
-        return new Storage(workFolder.resolve("data").resolve("duke.txt"));
+        return new Storage(workFolder.resolve("data").resolve("ev.txt"));
     }
 
     @Test

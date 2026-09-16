@@ -46,7 +46,7 @@ and means a change to the greeting does not require editing all of them.
 
 Every input block ends with `bye` so the session terminates.
 
-A case may also declare the saved data file. **Data file before** seeds `data/duke.txt` in the
+A case may also declare the saved data file. **Data file before** seeds `data/ev.txt` in the
 case's own working folder before the session starts; **Data file after** is compared against the
 file once the session ends, and the single line `(no file)` means no file should exist. Each case
 runs in a fresh working folder, so cases never see each other's saved tasks.
@@ -893,7 +893,7 @@ ____________________________________________________________
 
 ### TC-25 Tasks are saved as they are added and marked
 
-**Aim:** Every change to the list is written to `data/duke.txt` immediately, one line per task,
+**Aim:** Every change to the list is written to `data/ev.txt` immediately, one line per task,
 in the order the tasks appear in the list.
 
 **Input**
@@ -1074,7 +1074,7 @@ bye
 
 ```text
 ____________________________________________________________
-Skipped 4 unreadable line(s) in data\duke.txt.
+Skipped 4 unreadable line(s) in data\ev.txt.
 The rest loaded. Next change rewrites the file.
 ____________________________________________________________
 ____________________________________________________________

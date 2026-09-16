@@ -20,7 +20,7 @@ public class DeleteCommandTest {
     Path workFolder;
 
     private Storage storage() {
-        return new Storage(workFolder.resolve("data").resolve("duke.txt"));
+        return new Storage(workFolder.resolve("data").resolve("ev.txt"));
     }
 
     private TaskList twoTasks() throws EvException {

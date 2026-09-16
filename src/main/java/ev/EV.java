@@ -20,7 +20,7 @@ import ev.ui.Ui;
 public class EV {
 
     /** Where the task list is saved, relative to the folder the app is run from. */
-    public static final Path DATA_FILE = Paths.get("data", "duke.txt");
+    public static final Path DATA_FILE = Paths.get("data", "ev.txt");
 
     private final Ui ui;
     private final Storage storage;

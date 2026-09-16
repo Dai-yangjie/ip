@@ -28,14 +28,14 @@ public class ListCommandTest {
         tasks.add(new Todo("water plants"));
         Ui ui = new Ui();
 
-        new ListCommand().execute(tasks, ui, new Storage(workFolder.resolve("duke.txt")));
+        new ListCommand().execute(tasks, ui, new Storage(workFolder.resolve("ev.txt")));
 
         assertEquals("Your list:\n1.[T][ ] read book\n2.[T][ ] water plants", ui.takeResponse());
     }
 
     @Test
     public void execute_emptyList_saysSoAndWritesNothing() throws EvException {
-        Path file = workFolder.resolve("duke.txt");
+        Path file = workFolder.resolve("ev.txt");
         Ui ui = new Ui();
 
         new ListCommand().execute(new TaskList(), ui, new Storage(file));

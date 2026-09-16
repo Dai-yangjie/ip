@@ -158,7 +158,7 @@ foreach ($case in $cases) {
     $caseDir = Join-Path $workDir "$($case.Id).run"
     if (Test-Path $caseDir) { Remove-Item -Path $caseDir -Recurse -Force }
     New-Item -ItemType Directory -Path $caseDir | Out-Null
-    $dataFile = Join-Path $caseDir 'data\duke.txt'
+    $dataFile = Join-Path $caseDir 'data\ev.txt'
 
     if ($null -ne $case.DataBefore) {
         New-Item -ItemType Directory -Path (Split-Path -Parent $dataFile) | Out-Null

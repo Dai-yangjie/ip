@@ -27,7 +27,7 @@ public class StorageTest {
     Path workFolder;
 
     private Path dataFile() {
-        return workFolder.resolve("data").resolve("duke.txt");
+        return workFolder.resolve("data").resolve("ev.txt");
     }
 
     private void writeDataFile(String... lines) throws IOException {
